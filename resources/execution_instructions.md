@@ -20,7 +20,7 @@ All skills and subagents in `egm-product` must adhere to the following operation
 
 ## 5. Interactive Question Protocol
 *   **Open-Ended Clarification**: Ask at most **one** open-ended question per turn in plain text when exploring problem framing, personas, or metric baselines.
-*   **Structured Checkpoint Gates**: When presenting a readiness, triage, section-approval, or review-resolution gate, call the structured question tool (`ask_question` / `AskUserQuestion` / `request_user_input`) with a single single-select question (`len(questions) == 1`, `is_multi_select: false`) and put the recommended option first prefixed with `(Recommended)`:
+*   **Structured Checkpoint Gates**: When presenting a readiness, triage, section-approval, or review-resolution gate, call the harness's structured question tool (`ask_question` / `ask_user_question` / `AskUserQuestion` / `request_user_input`) with a single single-select question (`len(questions) == 1`, `is_multi_select: false`) and put the recommended option first prefixed with `(Recommended)`:
 
 ```json
 {
@@ -37,6 +37,8 @@ All skills and subagents in `egm-product` must adhere to the following operation
   ]
 }
 ```
+
+*   **Terminal Chat Fallback (For CLI Forks Without a Question Tool)**: If the active CLI harness does not expose a structured multiple-choice tool, render the single question and its options as a numbered Markdown list (`1. (Recommended) ...`, `2. ...`, `3. ...`) at the end of your turn and wait for the user's reply before proceeding.
 
 ## 6. Contradiction Auditing Across Artifacts
 *   Before finalizing `opportunity_brief.md`, `prd.md`, or `prototype.html`, verify that no requirement classified as `BLOCKED_NOW` appears inside the active Day-1 MVP scope (`## Goals`, `## Critical User Journeys (CUJs)`, or `## Scope Classification (READY_NOW / ADAPT_NOW)`). All `BLOCKED_NOW` items must reside exclusively under `## Prerequisite Ledger (BLOCKED_NOW)` and be listed as out-of-scope in `## Non-Goals`.

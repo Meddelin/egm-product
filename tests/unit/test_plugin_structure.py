@@ -245,10 +245,12 @@ LINK_PATTERN = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 def test_all_relative_markdown_links_resolve() -> None:
     search_roots = [
         REPO_ROOT / "README.md",
+        REPO_ROOT / "QWEN.md",
         REPO_ROOT / "docs",
         REPO_ROOT / "skills",
         REPO_ROOT / "agents",
         REPO_ROOT / "resources",
+        REPO_ROOT / "rules",
     ]
     md_files: list[Path] = []
     for root in search_roots:
@@ -383,4 +385,68 @@ def test_end_to_end_pipeline_invariants_across_skills_and_agents() -> None:
     assert "Zero External Network Requests" in proto_text
     assert "tabular-nums" in proto_text
     assert "stageshow-critic" in proto_text
+
+
+# ---------------------------------------------------------------------------
+# 7. Qwen CLI, Gemini CLI & Universal CLI Fork Compatibility Tests
+# ---------------------------------------------------------------------------
+
+
+def test_qwen_and_gemini_cli_extensions_and_commands() -> None:
+    qwen_ext_path = REPO_ROOT / "qwen-extension.json"
+    gemini_ext_path = REPO_ROOT / "gemini-extension.json"
+    root_manifest = json.loads((REPO_ROOT / "plugin.json").read_text(encoding="utf-8"))
+
+    assert qwen_ext_path.is_file(), "Missing qwen-extension.json"
+    assert gemini_ext_path.is_file(), "Missing gemini-extension.json"
+    assert (REPO_ROOT / "QWEN.md").is_file(), "Missing QWEN.md"
+
+    qwen_ext = json.loads(qwen_ext_path.read_text(encoding="utf-8"))
+    assert qwen_ext["name"] == root_manifest["name"]
+    assert qwen_ext["version"] == root_manifest["version"]
+    assert qwen_ext["contextFileName"] == "QWEN.md"
+    assert qwen_ext["commands"] == "resources/commands"
+    assert qwen_ext["skills"] == "skills"
+    assert qwen_ext["agents"] == "agents"
+
+    gemini_ext = json.loads(gemini_ext_path.read_text(encoding="utf-8"))
+    assert gemini_ext["name"] == root_manifest["name"]
+    assert gemini_ext["version"] == root_manifest["version"]
+    assert gemini_ext["contextFileName"] == "QWEN.md"
+
+    for cmd_name in EXPECTED_SKILLS:
+        cmd_path = REPO_ROOT / "resources" / "commands" / f"{cmd_name}.md"
+        assert cmd_path.is_file(), f"Missing Qwen/Gemini CLI slash command: {cmd_path}"
+        fm = _parse_frontmatter(cmd_path)
+        assert isinstance(fm.get("description"), str) and len(str(fm["description"])) >= 20
+        cmd_text = cmd_path.read_text(encoding="utf-8")
+        assert "{{args}}" in cmd_text
+        assert f"../../skills/{cmd_name}/SKILL.md" in cmd_text
+
+
+def test_universal_installer_supports_custom_qwen_cli_fork(tmp_path: Path) -> None:
+    from scripts.install import main as install_main
+
+    custom_fork_dir = tmp_path / ".custom-qwen-fork"
+    rc = install_main(["--target", "qwen", "--config-dir", str(custom_fork_dir), "--mode", "both"])
+    assert rc == 0
+
+    # Verify both extension bundle and flat installation exist
+    ext_root = custom_fork_dir / "extensions" / "egm-product"
+    assert (ext_root / "qwen-extension.json").is_file()
+    assert (ext_root / "QWEN.md").is_file()
+    for skill_name in EXPECTED_SKILLS:
+        assert (ext_root / "skills" / skill_name / "SKILL.md").is_file()
+        assert (ext_root / "resources" / "commands" / f"{skill_name}.md").is_file()
+        assert (custom_fork_dir / "skills" / skill_name / "SKILL.md").is_file()
+        assert (custom_fork_dir / "commands" / f"{skill_name}.md").is_file()
+
+    # Verify relative links inside the flat-installed skills/ and commands/ still resolve
+    for skill_name in EXPECTED_SKILLS:
+        flat_skill_md = custom_fork_dir / "skills" / skill_name / "SKILL.md"
+        assert (flat_skill_md.parent / "../../resources/execution_instructions.md").resolve().is_file()
+        flat_cmd_md = custom_fork_dir / "commands" / f"{skill_name}.md"
+        assert (flat_cmd_md.parent / f"../skills/{skill_name}/SKILL.md").resolve().is_file()
+        assert (flat_cmd_md.parent / "../resources/execution_instructions.md").resolve().is_file()
+
 

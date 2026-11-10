@@ -1,0 +1,9 @@
+{
+  "name": "egm-product",
+  "version": "0.1.0",
+  "description": "AI-native Product Management framework on the Elephant-Goldfish Model (EGM): assisted repository & metric discovery, 4+1 cross-functional reality checks, stack-grounded PRDs, and zero-build interactive HTML prototypes.",
+  "contextFileName": "QWEN.md",
+  "commands": "resources/commands",
+  "skills": "skills",
+  "agents": "agents"
+}

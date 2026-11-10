@@ -40,16 +40,46 @@ After `/pm-review` approves `docs/product/<feature-slug>/prd.md`, engineering te
 
 ## Installation & Harness Support
 
-### Quick Install
+`egm-product` ships native manifests, slash commands (`resources/commands/pm-*.md`), skills (`skills/pm-*/SKILL.md`), subagents (`agents/pm_*.md`), and context rules ([`QWEN.md`](./QWEN.md), [`rules/AGENTS.md`](./rules/AGENTS.md)) so it works across **Qwen Code (`qwen` CLI and custom Qwen CLI forks)**, **Gemini CLI**, **Antigravity**, **Claude Code**, **OpenAI Codex**, and **`omp`**.
+
+### 1. Qwen Code (`qwen` CLI) & Custom Qwen CLI Forks
 
 ```bash
-# Antigravity CLI
+# Option A: Native Qwen Code extension install
 git clone https://github.com/Meddelin/egm-product.git
-agy plugin install ./egm-product
-agy plugin enable egm-product
+qwen extensions install ./egm-product
+
+# Option B: Universal installer (works with ~/.qwen OR any custom Qwen CLI fork directory)
+python ./egm-product/scripts/install.py --target qwen
+# Custom fork config dir (global or project-local):
+python ./egm-product/scripts/install.py --target qwen --config-dir ~/.your-qwen-fork
 ```
 
-See [`docs/harnesses.md`](./docs/harnesses.md) for harness-specific installation instructions and subagent delegation mechanics across Antigravity, Claude Code, Claude Cowork, OpenAI Codex, ChatGPT Work, and `omp`.
+Once installed in Qwen CLI (or your fork), you get:
+*   **Top-level Slash Commands**: `/pm-discover`, `/pm-brainstorm`, `/pm-prd`, `/pm-review`, `/pm-prototype` (via `commands/pm-*.md`)
+*   **Skills**: `pm-discover`, `pm-brainstorm`, `pm-prd`, `pm-review`, `pm-prototype` (via `skills/pm-*/SKILL.md`)
+*   **Subagents (`task` tool)**: `pm-value-metrics`, `pm-tech-lead`, `pm-data-eval`, `pm-ux-risk`, `pm-scope-slicer` (via `agents/pm_*.md`)
+
+### 2. Gemini CLI, Antigravity, Claude Code, Codex & `omp`
+
+```bash
+# Gemini CLI
+gemini extensions install ./egm-product
+
+# Antigravity CLI
+agy plugin install ./egm-product && agy plugin enable egm-product
+
+# Claude Code
+claude plugin marketplace add Meddelin/egm-product && claude plugin install egm-product@egm-product
+
+# OpenAI Codex
+codex plugin marketplace add Meddelin/egm-product && codex plugin add egm-product@egm-product
+
+# omp
+omp plugin marketplace add Meddelin/egm-product && omp plugin install egm-product@egm-product
+```
+
+See [`docs/harnesses.md`](./docs/harnesses.md) for harness-specific subagent delegation mechanics across all supported CLIs.
 
 ### Quick Verification
 
