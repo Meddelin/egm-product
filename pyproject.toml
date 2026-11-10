@@ -1,0 +1,12 @@
+[project]
+name = "egm-product"
+version = "0.1.0"
+description = "AI-native Product Management framework built on the Elephant-Goldfish Model (EGM)"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests/unit"]
+addopts = "-ra -q --import-mode=importlib"

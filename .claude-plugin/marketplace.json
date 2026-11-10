@@ -1,0 +1,13 @@
+{
+  "name": "egm-product",
+  "owner": {
+    "name": "stas"
+  },
+  "plugins": [
+    {
+      "name": "egm-product",
+      "source": "./",
+      "description": "AI-native product discovery, stack-grounded PRDs, cross-functional reality checks, and interactive HTML prototypes."
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "name": "egm-product",
+  "version": "0.1.0",
+  "description": "AI-native Product Management framework on the Elephant-Goldfish Model (EGM): assisted repository & metric discovery, 4+1 cross-functional reality checks, stack-grounded PRDs, and zero-build interactive HTML prototypes.",
+  "author": {
+    "name": "stas",
+    "url": "https://github.com/Meddelin"
+  },
+  "homepage": "https://github.com/Meddelin/egm-product",
+  "repository": "https://github.com/Meddelin/egm-product",
+  "license": "Apache-2.0",
+  "keywords": [
+    "product-management",
+    "prd",
+    "discovery",
+    "metrics",
+    "prototyping",
+    "elephant-goldfish-model",
+    "ai-agents"
+  ],
+  "skills": "./skills/",
+  "requires_local_executor": true,
+  "interface": {
+    "displayName": "EGM Product",
+    "shortDescription": "AI-native product discovery, PRDs, and prototypes",
+    "longDescription": "Adapts the Elephant-Goldfish Model (EGM) for Product Managers working inside existing software repositories: discover capabilities and metric emitters, stress-test feature ideas with the 4+1 PM Goldfish swarm, draft stack-grounded PRDs, review specs, and build zero-build interactive HTML prototypes.",
+    "developerName": "stas",
+    "category": "Productivity",
+    "capabilities": [
+      "Discover product context and telemetry",
+      "Stress-test feature scope with 4+1 PM Goldfish",
+      "Draft and review stack-grounded PRDs",
+      "Generate zero-build interactive HTML prototypes"
+    ],
+    "defaultPrompt": [
+      "Discover our repository context and product metrics",
+      "Brainstorm a new feature and run the 4+1 Reality Check",
+      "Draft a stack-grounded PRD from our opportunity brief",
+      "Review this PRD with the PM Goldfish swarm"
+    ],
+    "brandColor": "#1B6EF3",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/icon.svg"
+  }
+}

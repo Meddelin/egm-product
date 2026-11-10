@@ -1,0 +1,11 @@
+# EGM Product (`egm-product`) Routing & Execution Rules
+
+Because `egm-product` skills (`pm-discover`, `pm-brainstorm`, `pm-prd`, `pm-review`, `pm-prototype`) set `disable-model-invocation: true` in `~/.gemini/config/plugins/egm-product/skills/`, their descriptions are hidden from passive skill discovery. Whenever the user invokes a `/pm-*` command or asks for Product Management workflows (discovering product context/metrics, brainstorming feature scope, writing or reviewing a PRD, or building a product prototype from a PRD), read the corresponding `SKILL.md` directly:
+
+| Stage / Trigger | Skill Path to Load | Primary Artifact & Subagents |
+| :--- | :--- | :--- |
+| **Stage 1: `/pm-discover`** (or mapping repo capabilities, UI tokens, and product metrics) | `~/.gemini/config/plugins/egm-product/skills/pm-discover/SKILL.md` | Writes `PRODUCT_CONTEXT.md` (max 300 lines), `METRICS.md` (max 300 lines), `.pm/schemas.md` (max 400 lines), and `.pm/ui_tokens.md` (max 200 lines). |
+| **Stage 2: `/pm-brainstorm`** (or stress-testing a feature idea / capability gap) | `~/.gemini/config/plugins/egm-product/skills/pm-brainstorm/SKILL.md` | Dispatches the 4 Phase 1 Goldfish (`pm-value-metrics`, `pm-tech-lead`, `pm-data-eval`, `pm-ux-risk`) in parallel -> sequential `pm-scope-slicer` -> writes `docs/product/<feature-slug>/opportunity_brief.md`. |
+| **Stage 3: `/pm-prd`** (or drafting a stack-grounded PRD) | `~/.gemini/config/plugins/egm-product/skills/pm-prd/SKILL.md` | Drafts `docs/product/<feature-slug>/prd.md` separating active `READY_NOW` / `ADAPT_NOW` MVP scope from `## Prerequisite Ledger (BLOCKED_NOW)`. |
+| **Stage 4: `/pm-review`** (or auditing & resolving PRD findings) | `~/.gemini/config/plugins/egm-product/skills/pm-review/SKILL.md` | Runs a 2-round antagonistic audit across the 4+1 PM Goldfish swarm against `prd-standard.md` and writes `docs/product/<feature-slug>/pm_review_report.md`. |
+| **Stage 5: `/pm-prototype`** (or generating an interactive HTML preview from an approved PRD) | `~/.gemini/config/plugins/egm-product/skills/pm-prototype/SKILL.md` | Generates zero-build `docs/product/<feature-slug>/prototype.html` (max 400 lines, 3–4 switchable states) using `.pm/ui_tokens.md` and Stageshow craft rules. |

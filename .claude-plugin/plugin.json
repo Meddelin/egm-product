@@ -1,0 +1,29 @@
+{
+  "name": "egm-product",
+  "version": "0.1.0",
+  "description": "AI-native Product Management framework on the Elephant-Goldfish Model (EGM): assisted repository & metric discovery, 4+1 cross-functional reality checks, stack-grounded PRDs, and zero-build interactive HTML prototypes.",
+  "author": {
+    "name": "stas",
+    "url": "https://github.com/Meddelin"
+  },
+  "homepage": "https://github.com/Meddelin/egm-product",
+  "repository": "https://github.com/Meddelin/egm-product",
+  "license": "Apache-2.0",
+  "keywords": [
+    "product-management",
+    "prd",
+    "discovery",
+    "metrics",
+    "prototyping",
+    "elephant-goldfish-model",
+    "ai-agents"
+  ],
+  "icon": "./assets/icon.svg",
+  "agents": [
+    "./.claude-plugin/agents/pm_value_metrics.md",
+    "./.claude-plugin/agents/pm_tech_lead.md",
+    "./.claude-plugin/agents/pm_data_eval.md",
+    "./.claude-plugin/agents/pm_ux_risk.md",
+    "./.claude-plugin/agents/pm_scope_slicer.md"
+  ]
+}

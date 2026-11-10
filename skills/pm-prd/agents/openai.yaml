@@ -1,0 +1,6 @@
+interface:
+  display_name: "PM PRD Draft"
+  short_description: "Draft a stack-grounded PRD with active MVP and blocked scope"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#1B6EF3"

@@ -1,0 +1,20 @@
+{
+  "name": "egm-product",
+  "interface": {
+    "displayName": "EGM Product"
+  },
+  "plugins": [
+    {
+      "name": "egm-product",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+# Python & test caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS & editor files
+.DS_Store
+Thumbs.db
+
+# Local EGM drafting & review working reports
+concepts_brief.md
+design_draft.md
+zoom_out_report.md
+comprehension_report.md
+critic_report.md
+intermediate_zoom_out_report.md
+implementation_readiness_report.md
