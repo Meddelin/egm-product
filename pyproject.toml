@@ -1,6 +1,6 @@
 [project]
 name = "egm-product"
-version = "0.4.0"
+version = "0.5.0"
 description = "AI-native Product Management framework built on the Elephant-Goldfish Model (EGM)"
 readme = "README.md"
 license = { file = "LICENSE" }

@@ -1,7 +1,7 @@
 {
   "name": "egm-product",
-  "version": "0.4.0",
-  "description": "AI-native Product Management framework on the Elephant-Goldfish Model (EGM): product, company & role discovery, 4+1 opportunity shaping, user-focused PRDs with built-in product review, and zero-build interactive HTML prototypes.",
+  "version": "0.5.0",
+  "description": "AI-native Product Management framework on the Elephant-Goldfish Model (EGM): product, role & UI shell discovery, JTBD + User Story opportunity shaping, PRDs with built-in 4+1 product review, and zero-build HTML prototypes inside the real product canvas.",
   "contextFileName": "GEMINI_EXTENSION.md",
   "commands": "resources/commands",
   "skills": "skills",

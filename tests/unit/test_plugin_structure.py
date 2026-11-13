@@ -75,7 +75,7 @@ def test_root_and_harness_manifests_are_valid_consistent_and_within_limits() -> 
     # Root plugin.json omits $schema so omp does not reject disable-model-invocation: true
     assert "$schema" not in root_manifest
     assert root_manifest["name"] == "egm-product"
-    assert root_manifest["version"] == "0.4.0"
+    assert root_manifest["version"] == "0.5.0"
     assert root_manifest["license"] == "Apache-2.0"
     assert len(root_manifest["suggestedPrompts"]) == 3
 
@@ -303,16 +303,15 @@ def test_all_relative_markdown_links_and_rules_routing_resolve() -> None:
 
 
 # ---------------------------------------------------------------------------
-# 5. Template Section Headers, Top-Level Handoff Directive & Line Caps
+# 5. Template Section Headers & Top-Level Handoff Directive
 # ---------------------------------------------------------------------------
 
 
 @pytest.mark.parametrize(
-    ("template_name", "line_cap", "required_headers"),
+    ("template_name", "required_headers"),
     [
         (
             "company_context.template.md",
-            200,
             [
                 "## 1. Organization Profile & Strategic Priorities",
                 "## 2. Organizational Role Directory (Context Only — Not Assumed Product Users)",
@@ -322,7 +321,6 @@ def test_all_relative_markdown_links_and_rules_routing_resolve() -> None:
         ),
         (
             "product_context.template.md",
-            250,
             [
                 "## 1. Existing Product Surface (Observed User Capabilities)",
                 "## 2. Product Identity, Company Context & Strategy (Human-Curated)",
@@ -332,7 +330,6 @@ def test_all_relative_markdown_links_and_rules_routing_resolve() -> None:
         ),
         (
             "metrics.template.md",
-            200,
             [
                 "## 1. Product Metric Tree",
                 "## 2. Domain Product Events & Rollout Norms",
@@ -340,11 +337,12 @@ def test_all_relative_markdown_links_and_rules_routing_resolve() -> None:
         ),
         (
             "opportunity_brief.template.md",
-            200,
             [
                 "## 4+1 Product Goldfish Audit Summary",
-                "## 1. Problem, Evidence & Causal Hypothesis",
+                "## 1. Problem, Jobs-to-be-Done & Causal Hypothesis",
                 "Affected Product Roles",
+                "Primary Jobs-to-be-Done (JTBD)",
+                "Target Product Surface / Host Screen",
                 "Demand Evidence Posture",
                 "Validation Hypothesis & Kill/Pivot Criterion",
                 "## 2. Proposed Product Solution & MVP Scope Cut",
@@ -354,29 +352,32 @@ def test_all_relative_markdown_links_and_rules_routing_resolve() -> None:
         ),
         (
             "prd.template.md",
-            250,
             [
-                "Engineering Handoff Directive (`/egm-draft` & Coding Agents)",
+                "Engineering Handoff Directive",
                 "## 1. Problem & Strategic Context",
                 "Demand Evidence Posture",
                 "## 2. Goals & Non-Goals",
-                "## 3. Target Roles & Critical User Journeys (CUJs)",
+                "## 3. Jobs-to-be-Done (JTBD), User Stories & Scenarios (CUJs)",
+                "### Jobs-to-be-Done (JTBD)",
+                "### User Stories",
+                "### Critical User Journeys (CUJs)",
                 "### Cross-Role Handoffs & Permissions",
                 "## 4. Functional Requirements, Business Rules & Edge Cases",
-                "## 5. UX States & Copy Guidelines",
+                "## 5. UI Placement, Screen States & Copy",
+                "Host Screen & UI Mount Point",
                 "## 6. Success Metrics, Product Events & Rollout Plan",
                 "## 7. Alternatives Considered & Open Questions for Engineering",
             ],
         ),
     ],
 )
-def test_templates_enforce_line_caps_and_required_sections(
-    template_name: str, line_cap: int, required_headers: list[str]
+def test_templates_enforce_required_sections(
+    template_name: str, required_headers: list[str]
 ) -> None:
     template_path = REPO_ROOT / "resources" / "templates" / template_name
     assert template_path.is_file()
     content = template_path.read_text(encoding="utf-8")
-    assert len(content.splitlines()) <= line_cap
+    assert content.strip(), f"{template_name} must not be empty"
     for header in required_headers:
         assert header in content, f"{template_name} missing {header!r}"
 
@@ -385,13 +386,14 @@ def test_templates_enforce_line_caps_and_required_sections(
 
 
 # ---------------------------------------------------------------------------
-# 6. Pure-Product Boundary & 4+1 Swarm Behavioral Invariants
+# 6. Pure-Product Boundary, Story-Driven States & 1:1 Canvas Invariants
 # ---------------------------------------------------------------------------
 
 
 def test_pure_product_boundary_and_4_plus_1_swarm_invariants() -> None:
-    # Ensure zero engineering-grooming bloat remains in templates, standards, skills, or agents
-    forbidden_technical_tokens = (
+    # Ensure zero engineering bloat, foreign design frameworks, external plugin couplings,
+    # or hardcoded 4-state dogma leak into runtime files or docs.
+    forbidden_tokens = (
         ".pm/schemas.md",
         "READY_NOW",
         "ADAPT_NOW",
@@ -404,45 +406,72 @@ def test_pure_product_boundary_and_4_plus_1_swarm_invariants() -> None:
         "pm-security-ops",
         "pm-scope-slicer",
         "pm-repo-scanner",
+        "stageshow",
+        "egm-draft",
+        "egm-bootstrap",
+        "4-state",
+        "4 mandatory",
+        "4 switchable",
+        "4 ux states",
     )
-    runtime_dirs = [
+    audited_targets = [
+        REPO_ROOT / "README.md",
+        REPO_ROOT / "QWEN.md",
+        REPO_ROOT / "GEMINI_EXTENSION.md",
         REPO_ROOT / "skills",
         REPO_ROOT / "agents",
         REPO_ROOT / ".claude-plugin" / "agents",
         REPO_ROOT / "resources",
         REPO_ROOT / "rules",
+        REPO_ROOT / "docs",
     ]
-    for directory in runtime_dirs:
-        for md_file in directory.rglob("*.md"):
-            text = md_file.read_text(encoding="utf-8")
-            for forbidden in forbidden_technical_tokens:
-                assert forbidden not in text, (
-                    f"Technical bloat token {forbidden!r} leaked into pure-product file {md_file.relative_to(REPO_ROOT)}"
-                )
+    md_files: list[Path] = []
+    for target in audited_targets:
+        if target.is_file():
+            md_files.append(target)
+        elif target.is_dir():
+            md_files.extend(sorted(target.rglob("*.md")))
 
-    # pm-discover uses light pm-product-scanner and supports --scope and --context with Zero Assumed Personas
+    for md_file in md_files:
+        lowered = md_file.read_text(encoding="utf-8").lower()
+        for forbidden in forbidden_tokens:
+            assert forbidden.lower() not in lowered, (
+                f"Forbidden token {forbidden!r} leaked into {md_file.relative_to(REPO_ROOT)}"
+            )
+
+    # pm-discover uses pm-product-scanner and supports --scope and --context with Zero Assumed Personas
     discover_text = (REPO_ROOT / "skills" / "pm-discover" / "SKILL.md").read_text(encoding="utf-8")
     assert "pm-product-scanner" in discover_text
     assert "--scope <subdir>" in discover_text
     assert "--context <path>" in discover_text
     assert "Zero Assumed Personas" in discover_text
 
-    # pm-prd includes built-in 4+1 Product Goldfish Review Loop
+    # pm-prd includes JTBD + User Stories + story-driven screen states + built-in 4+1 Product Goldfish Review Loop
     prd_skill_text = (REPO_ROOT / "skills" / "pm-prd" / "SKILL.md").read_text(encoding="utf-8")
     for lens in ("pm-value-strategy", "pm-ux-flows", "pm-metrics-experiment", "pm-business-logic", "pm-synthesizer"):
         assert lens in prd_skill_text
+    assert "### Jobs-to-be-Done (JTBD)" in prd_skill_text
+    assert "### User Stories" in prd_skill_text
+    assert "## 5. UI Placement, Screen States & Copy" in prd_skill_text
     assert "Inline Bootstrap Recovery Gate" in prd_skill_text
 
-    # pm-prototype verifies craft via pm-ux-flows Mode: PROTOTYPE_AUDIT and conditional Role switcher
+    # pm-prototype inspects real host frontend canvas (layout, i18n, theme, host screen), builds 1:1 canvas & story-driven flows, and runs Mode: PROTOTYPE_AUDIT
     proto_text = (REPO_ROOT / "skills" / "pm-prototype" / "SKILL.md").read_text(encoding="utf-8")
     assert "Mode: PROTOTYPE_AUDIT" in proto_text
     assert "pm-ux-flows" in proto_text
-    assert "400 lines" in proto_text
+    assert "Mandatory Host-Frontend Canvas Inspection" in proto_text
+    assert "1:1 Product Canvas Fidelity" in proto_text
+    assert "Story-Driven Interactive Flows, Scenarios & Roles" in proto_text
+    assert "PRD-Dictated States & Role Perspectives" in proto_text
+    assert "i18n" in proto_text
+    assert "position: fixed" in proto_text
     assert "Zero External Network Requests" in proto_text
-    assert "Role` switcher" in proto_text
 
-    # pm_execution_instructions enforces Zero Assumed Personas and Progression vs. Neutral Trade-Off Gates
+    # pm_execution_instructions enforces JTBD -> User Stories, Story-Driven States, Zero Assumed Personas, and Progression vs. Neutral Trade-Off Gates
     exec_text = (REPO_ROOT / "resources" / "pm_execution_instructions.md").read_text(encoding="utf-8")
+    assert "JTBD -> User Stories -> CUJ Hierarchy" in exec_text
+    assert "Story-Driven States & Scenarios (Non-Deterministic)" in exec_text
+    assert "Signal Over Padding" in exec_text
     assert "Zero Assumed Personas" in exec_text
     assert "Progression Gates" in exec_text
     assert "Trade-Off & Escalation Gates" in exec_text
@@ -454,7 +483,7 @@ def test_pure_product_boundary_and_4_plus_1_swarm_invariants() -> None:
     assert qwen_ext["contextFileName"] == "QWEN.md"
     assert gemini_ext["contextFileName"] == "GEMINI_EXTENSION.md"
     for ext in (qwen_ext, gemini_ext):
-        assert ext["version"] == "0.4.0"
+        assert ext["version"] == "0.5.0"
         assert ext["commands"] == "resources/commands"
         assert ext["skills"] == "skills"
         assert ext["agents"] == "agents"

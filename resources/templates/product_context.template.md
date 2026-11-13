@@ -6,14 +6,14 @@ updated_at: "<YYYY-MM-DD>"
 
 # Product Context Contract (`PRODUCT_CONTEXT.md`)
 
-> **Contract Cap**: Maximum 250 lines. Captures what the product does for users, strategic context, existing user-facing capabilities, and empirical user roles. Re-running `/pm-discover` updates `## 1. Existing Product Surface (Observed User Capabilities)` and `.pm/ui_tokens.md` while preserving `## 2. Product Identity, Company Context & Strategy (Human-Curated)` and role definitions.
+> Captures what the product does for users, strategic context, existing user-facing capabilities, and empirical user roles. Re-running `/pm-discover` updates `## 1. Existing Product Surface (Observed User Capabilities)` and `.pm/ui_tokens.md` while preserving `## 2. Product Identity, Company Context & Strategy (Human-Curated)` and role definitions.
 
 ---
 
 ## 1. Existing Product Surface (Observed User Capabilities)
 *   **Live User Areas & Screens**: `<Plain-language summary of existing user-facing screens, flows, and capabilities observed in the product — or Greenfield>`
 *   **Key Integrations & Adjacent Products**: `<External or internal products users move between before/after using this product>`
-*   **Visual Design Tokens Pointer**: `.pm/ui_tokens.md` (max 150 lines; normalized `:root` CSS custom properties used by `/pm-prototype`)
+*   **Visual Design System & Shell Pointer**: `.pm/ui_tokens.md` (App Shell & Navigation Blueprint, Frontend File Map, UI language, component style signatures, and `:root` CSS custom properties used by `/pm-prototype`)
 
 ---
 

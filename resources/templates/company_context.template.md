@@ -5,7 +5,7 @@ updated_at: "<YYYY-MM-DD>"
 
 # Organizational & Domain Context (`COMPANY_CONTEXT.md`)
 
-> **Optional Reusable Context Contract (`<= 200 lines`)**: Captures company-wide business context, organizational contours, shared terminology, and governance norms so multiple internal or external products do not repeat them. Store at `~/.pm/COMPANY_CONTEXT.md` (shared across projects) or `./COMPANY_CONTEXT.md` (project override), or pass existing company/strategy docs via `/pm-discover --context <path>`. Never assume every role listed here uses a specific product—actual product users are mapped empirically in `PRODUCT_CONTEXT.md`.
+> **Optional Reusable Context Contract**: Captures company-wide business context, organizational contours, shared terminology, and governance norms so multiple internal or external products do not repeat them. Store at `~/.pm/COMPANY_CONTEXT.md` (shared across projects) or `./COMPANY_CONTEXT.md` (project override), or pass existing company/strategy docs via `/pm-discover --context <path>`. Never assume every role listed here uses a specific product—actual product users are mapped empirically in `PRODUCT_CONTEXT.md`.
 
 ---
 

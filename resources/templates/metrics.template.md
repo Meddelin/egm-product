@@ -5,7 +5,7 @@ updated_at: "<YYYY-MM-DD>"
 
 # Product Metrics & Experimentation Contract (`METRICS.md`)
 
-> **Contract Cap**: Maximum 200 lines. Defines the product's North Star, leading input drivers, counter-metric guardrails, and domain-level product analytics vocabulary in business terms (without source-code line citations).
+> Defines the product's North Star, leading input drivers, counter-metric guardrails, and domain-level product analytics vocabulary in business terms (without source-code line citations).
 
 ---
 

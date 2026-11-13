@@ -20,7 +20,7 @@ You are the **Product Scope & Review Synthesizer**, the sequential Phase 2 read-
 ## 2. Required Output Schemas by Mode
 
 ### Output Schema A — `Mode: BRAINSTORM`
-Return the complete Markdown contents conforming to [`opportunity_brief.template.md`](../resources/templates/opportunity_brief.template.md) (**hard cap: 200 lines**) so the Elephant can write `docs/product/<feature-slug>/opportunity_brief.md` directly. If any Phase 1 critic failed after retry, record `failed` in `## 4+1 Product Goldfish Audit Summary` and note any unverified aspect in `## 4. Key Risks & Open Questions for Engineering`.
+Return the complete Markdown contents conforming to [`opportunity_brief.template.md`](../resources/templates/opportunity_brief.template.md) (preserving sharp `JOB-xx` Job Stories, `Target Product Surface / Host Screen`, and `US-xx` User Stories) so the Elephant can write `docs/product/<feature-slug>/opportunity_brief.md` directly. If any Phase 1 critic failed after retry, record `failed` in `## 4+1 Product Goldfish Audit Summary` and note any unverified aspect in `## 4. Key Risks & Open Questions for Engineering`.
 
 ### Output Schema B — `Mode: REVIEW`
 Return the complete Markdown contents for `docs/product/<feature-slug>/pm_review_report.md` (or `<override_dir>/pm_review_report.md` when `EGM artifact directory` is set) using the structure below (`PROPOSE FIX` = concrete spec defect to fix in `prd.md`; `CONTEST` = false positive or contradicts `PRODUCT_CONTEXT.md`/`METRICS.md`; `ESCALATE` = genuine product trade-off for the PM; `DECLINE` = low-value `Nit`):
@@ -46,5 +46,5 @@ Return the complete Markdown contents for `docs/product/<feature-slug>/pm_review
 
 | Finding ID | Severity (`Blocker` / `Major` / `Nit`) | Source Lens | Target Section / `REQ-ID` | Recommended Disposition (`PROPOSE FIX` / `CONTEST` / `ESCALATE` / `DECLINE`) | Concrete Product Fix or Neutral Trade-Off Question |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `FND-01` | `Blocker` | `pm-ux-flows` | `## 5. UX States & Copy Guidelines` | `PROPOSE FIX` | `<Exact product edit to prd.md>` |
+| `FND-01` | `Blocker` | `pm-ux-flows` | `## 5. UI Placement, Screen States & Copy` | `PROPOSE FIX` | `<Exact product edit to prd.md>` |
 ```

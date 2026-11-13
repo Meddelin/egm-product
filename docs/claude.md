@@ -52,5 +52,5 @@ This advisory is expected. `agents/` holds harness-agnostic personas, while `.cl
 
 ## 4. Subagent Isolation & Artifact Directory Override
 
-* **Claude Code & Cowork Dispatch**: Dispatch the 4 Phase 1 product critics (`egm-product:pm-value-strategy`, `egm-product:pm-ux-flows`, `egm-product:pm-metrics-experiment`, `egm-product:pm-business-logic`) directly from the main Elephant context in parallel, then dispatch `egm-product:pm-synthesizer` sequentially in Phase 2.
+* **Claude Code & Cowork Dispatch**: Dispatch `egm-product:pm-product-scanner` in Stage 1 (`/pm-discover`), dispatch the 4 Phase 1 product critics (`egm-product:pm-value-strategy`, `egm-product:pm-ux-flows`, `egm-product:pm-metrics-experiment`, `egm-product:pm-business-logic`) in parallel followed sequentially by `egm-product:pm-synthesizer` in Stage 2 (`/pm-brainstorm`) and Stage 3 (`/pm-prd`), and dispatch `egm-product:pm-ux-flows` (`Mode: PROTOTYPE_AUDIT`) in Stage 4 (`/pm-prototype`).
 * **Scratch Override**: If the prompt, `CLAUDE.md`, or `AGENTS.md` contains `EGM artifact directory: <path>`, write working review reports (`pm_review_report.md` and scratch files) to `<path>` (resolved relative to the workspace root).

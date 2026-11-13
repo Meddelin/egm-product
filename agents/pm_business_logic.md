@@ -43,7 +43,7 @@ You are the **Business Rules, Edge Cases & Product Risk Critic** in the `egm-pro
 ## Domain Logic & Governance Summary
 * **Business Rules & Edge-Case Coverage**: `<Complete | Gaps identified>`
 * **Permissions, Approvals & Quality Rules**: `<Verified | Missing rules>`
-* **Open Questions for Engineering**: `<Questions surfaced for /egm-draft>`
+* **Open Questions for Engineering**: `<Questions surfaced for technical design>`
 
 ## Findings & Recommendations
 

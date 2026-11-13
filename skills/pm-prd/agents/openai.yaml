@@ -1,6 +1,6 @@
 interface:
   display_name: "PM PRD & Review"
-  short_description: "Draft and audit a user-focused PRD with 4+1 Product Goldfish"
+  short_description: "Draft JTBD + User Story PRDs and run 4+1 Product Goldfish review"
   icon_small: "./assets/icon.svg"
   icon_large: "./assets/icon.svg"
   brand_color: "#1B6EF3"

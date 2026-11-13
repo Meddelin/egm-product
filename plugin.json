@@ -1,8 +1,8 @@
 {
   "name": "egm-product",
   "displayName": "EGM Product",
-  "version": "0.4.0",
-  "description": "AI-native Product Management framework on the Elephant-Goldfish Model (EGM): product, company & role discovery, 4+1 opportunity shaping, user-focused PRDs with built-in product review, and zero-build interactive HTML prototypes.",
+  "version": "0.5.0",
+  "description": "AI-native Product Management framework on the Elephant-Goldfish Model (EGM): product, role & UI shell discovery, JTBD + User Story opportunity shaping, PRDs with built-in 4+1 product review, and zero-build HTML prototypes inside the real product canvas.",
   "author": {
     "name": "stas",
     "url": "https://github.com/Meddelin"
@@ -12,13 +12,15 @@
   "license": "Apache-2.0",
   "logo": "assets/icon.svg",
   "suggestedPrompts": [
-    "Run /pm-discover to map our product context, user roles, and metric tree",
-    "Run /pm-brainstorm to shape and challenge a new feature idea",
-    "Run /pm-prd to draft and review a user-focused PRD"
+    "Run /pm-discover to map our product context, user roles, UI shell, and metric tree",
+    "Run /pm-brainstorm to shape Jobs-to-be-Done and challenge a new feature idea",
+    "Run /pm-prd to draft and review a JTBD + User Story PRD"
   ],
   "keywords": [
     "product-management",
     "prd",
+    "jtbd",
+    "user-stories",
     "discovery",
     "metrics",
     "prototyping",
@@ -31,20 +33,20 @@
       "interface": {
         "displayName": "EGM Product",
         "shortDescription": "Specs, PRDs & HTML prototypes",
-        "longDescription": "Adapts the Elephant-Goldfish Model (EGM) for Product Managers: capture company context, empirical user roles, and product metric trees; shape opportunities and cut MVP bloat with the 4+1 Product Goldfish swarm (value, UX/role flows, metrics, and business logic); draft and review user-focused PRDs without technical noise; and build zero-build interactive HTML prototypes.",
+        "longDescription": "Adapts the Elephant-Goldfish Model (EGM) for Product Managers: capture company context, empirical user roles, App Shell UI blueprints, and product metric trees; shape Jobs-to-be-Done (JTBD) and cut MVP bloat with the 4+1 Product Goldfish swarm; draft and review JTBD + User Story PRDs without backend noise; and build zero-build interactive HTML prototypes inside the real product UI canvas.",
         "developerName": "stas",
         "category": "Productivity",
         "capabilities": [
-          "Map product strategy, empirical user roles, and metrics",
-          "Challenge feature scope with 4+1 Product Goldfish critics",
-          "Draft and polish user-focused PRDs with built-in review",
-          "Generate zero-build interactive HTML prototypes"
+          "Map product strategy, empirical user roles, UI shell, and metrics",
+          "Challenge Jobs-to-be-Done and MVP scope with 4+1 Product Goldfish critics",
+          "Draft and polish JTBD + User Story PRDs with built-in review",
+          "Generate zero-build HTML prototypes inside the real product UI canvas"
         ],
         "defaultPrompt": [
-          "Discover our product context, roles, and metric tree",
-          "Brainstorm a product opportunity and cut MVP bloat",
-          "Draft and review a user-focused PRD",
-          "Generate an interactive HTML prototype from our PRD"
+          "Discover our product context, roles, UI shell, and metric tree",
+          "Brainstorm Jobs-to-be-Done and cut MVP bloat",
+          "Draft and review a JTBD + User Story PRD",
+          "Generate an interactive HTML prototype inside our product UI"
         ],
         "brandColor": "#1B6EF3",
         "composerIcon": "./assets/icon.svg",

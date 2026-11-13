@@ -16,7 +16,7 @@ If the prompt or `AGENTS.md` contains `EGM artifact directory: <path>`, route wo
 ## 2. Fresh-Context Product Goldfish Delegation (`spawn_agent`)
 
 Inspect the native subagent tool schema in the active Codex or ChatGPT Work session:
-* When `spawn_agent` exposes `fork_context`, set **`fork_context: false`** on every Goldfish invocation (`pm-product-scanner`, the 4 Phase 1 product critics, and `pm-synthesizer`).
+* When `spawn_agent` exposes `fork_context`, set **`fork_context: false`** on every Goldfish invocation (`pm-product-scanner` in Stage 1, the 4 Phase 1 product critics and `pm-synthesizer` in Stages 2–3, and `pm-ux-flows` in `Mode: PROTOTYPE_AUDIT` in Stage 4).
 * When the schema exposes `fork_turns`, set **`fork_turns: "none"`**.
 * Pass absolute paths to the canonical persona file (`<plugin_root>/agents/pm_<role>.md`), [`prd-standard.md`](../resources/document_standards/prd-standard.md), `PRODUCT_CONTEXT.md`, `METRICS.md`, optional `COMPANY_CONTEXT.md`, and the target artifact. Never paste the Elephant's conversation transcript into the child prompt.
 * Wait for all 4 Phase 1 product critics to complete before invoking `pm-synthesizer`. If fresh-context subagent tools are unavailable in the current ChatGPT mode, stop and report that fresh-context Goldfish isolation is unavailable for 4+1 swarms (`/pm-brainstorm` and `/pm-prd` review) rather than role-playing all 4 critics in the parent context; single-pass tasks (`/pm-discover` and `/pm-prototype`) may use bounded inline fallback.

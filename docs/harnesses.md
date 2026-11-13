@@ -44,8 +44,8 @@ Every subagent in `egm-product` (`pm-product-scanner`, `pm-value-strategy`, `pm-
 
 ---
 
-## 4. Artifact Directory Override & Coexistence with Engineering `egm`
+## 4. Artifact Directory Override & Clean Product-to-Engineering Boundary
 
-* **Zero Namespace Collisions**: Skills (`pm-*`), subagents (`pm-*`), and shared instructions ([`resources/pm_execution_instructions.md`](../resources/pm_execution_instructions.md)) are strictly namespaced so installing `egm-product` alongside engineering `egm` never overwrites `egm` files.
+* **Zero Namespace Collisions**: Skills (`pm-*`), subagents (`pm-*`), and shared instructions ([`resources/pm_execution_instructions.md`](../resources/pm_execution_instructions.md)) are strictly namespaced so installing `egm-product` alongside other plugins never overwrites existing commands or personas.
 * **Scratch / Working Report Override**: Committed product deliverables live in `docs/product/<feature-slug>/`. Add `EGM artifact directory: .dev/docs` to your prompt, `CLAUDE.md`, or `AGENTS.md` to route `pm_review_report.md` and working scratch reports to `.dev/docs/`.
-* **Clean Product-to-Engineering Boundary**: [`/pm-prd`](../skills/pm-prd/SKILL.md) focuses strictly on *what, for whom, and why*, placing an **Engineering Handoff Directive** at the top of `prd.md` so `/egm-draft docs/product/<feature-slug>/prd.md` takes over technical architecture and writes `docs/designs/<feature-slug>.md`.
+* **Clean Product-to-Engineering Boundary**: [`/pm-prd`](../skills/pm-prd/SKILL.md) focuses strictly on *what, for whom, and why*, placing an **Engineering Handoff Directive** at the top of `prd.md` so engineering teams and coding agents design technical architecture separately without polluting the PRD.

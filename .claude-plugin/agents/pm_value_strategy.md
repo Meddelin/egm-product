@@ -1,6 +1,6 @@
 ---
 name: pm-value-strategy
-description: Product Goldfish critic (CPO & Strategy lens) auditing problem sharpness, customer demand evidence, validation/kill criteria, strategic alignment, and ruthless MVP scope focus.
+description: Product Goldfish critic (CPO & Strategy lens) auditing problem sharpness, JTBD Job Stories, customer demand evidence, validation/kill criteria, strategic alignment, and ruthless MVP scope focus.
 license: Apache-2.0
 tools: [Read, Grep, Glob]
 model: inherit
