@@ -1,94 +1,86 @@
 # PRD: <Feature Title> (`<feature-slug>`)
 
 *   **Author:** <pm-name>
-*   **Status:** Draft | Approved
+*   **Status:** Draft | Draft (Needs Revision) | Approved
 *   **Date:** <YYYY-MM-DD>
 *   **Opportunity Brief:** `docs/product/<feature-slug>/opportunity_brief.md`
 
+> [!IMPORTANT]
+> **Engineering Handoff Directive (`/egm-draft` & Coding Agents)**:
+> 1. **Product Source of Truth**: Treat `## 1. Problem & Strategic Context`, `## 2. Goals & Non-Goals`, `## 3. Target Roles & Critical User Journeys (CUJs)`, `## 4. Functional Requirements, Business Rules & Edge Cases`, `## 5. UX States & Copy Guidelines`, and `## 6. Success Metrics, Product Events & Rollout Plan` as approved product requirements.
+> 2. **Strict MVP Boundary**: Implement **only** active MVP `REQ-*` items. Exclude everything listed under `### Non-Goals (Out of Scope / Deferred)`.
+> 3. **Technical Ownership**: Resolve `## 7. Alternatives Considered & Open Questions for Engineering` in the codebase and write the technical design spec to **`docs/designs/<feature-slug>.md`** (never overwrite `prd.md`).
+
 --------------------------------------------------------------------------------
 
-## Overview
+## 1. Problem & Strategic Context
 
-<Concise summary of the feature, the system capabilities it builds upon in `PRODUCT_CONTEXT.md`, and the approved Day-1 MVP slice (`READY_NOW` and `ADAPT_NOW` requirements).>
+*   **Context & Why Now**: <How this fits into the product surface and strategic horizon in `PRODUCT_CONTEXT.md`>
+*   **User & Business Problem**: <Concrete workflow pain point or missed outcome experienced by specific product roles>
+*   **Demand Evidence Posture**: `EVIDENCE_BACKED` (`<research / tickets / funnel analytics>`) | `UNVALIDATED_ASSUMPTION`
+*   **Validation Hypothesis & Kill/Pivot Criterion**: <Required when `UNVALIDATED_ASSUMPTION` (recommended for all features): measurable threshold over a defined window below which the feature is iterated or turned off>
 
-## The Problem
+## 2. Goals & Non-Goals
 
-<Concrete user workflow friction, capability-to-workflow gap, or system bottleneck backed by repository citations and `METRICS.md` baselines.>
+### MVP Goals (`In Scope`)
+*   **`REQ-001` (<Outcome Title>)**: <User/business outcome>
+*   **`REQ-002` (<Outcome Title>)**: <User/business outcome>
 
-## Goals
+### Non-Goals (`Out of Scope / Deferred`)
+*   <Explicitly excluded capabilities so scope does not creep during design or engineering>
 
-*   **`REQ-001` (<Title>)**: <Measurable Day-1 capability (`READY_NOW`)>
-*   **`REQ-002` (<Title>)**: <Measurable adapted capability or telemetry instrumentation task (`ADAPT_NOW`)>
+--------------------------------------------------------------------------------
 
-## Non-Goals
+## 3. Target Roles & Critical User Journeys (CUJs)
 
-*   **Deferred `BLOCKED_NOW` Scope**: `REQ-003` (tracked exclusively under `## Prerequisite Ledger (BLOCKED_NOW)` and excluded from Day-1 implementation).
-*   <Explicit non-goals>
+### CUJ 1 [`<ROLE-01: Role Name>`]: <Primary User Flow> (`REQ-001`, `REQ-002`)
+*   **Given**: <User's role, starting context, and business preconditions>
+*   **When**: <Steps the user takes>
+*   **Then**: <Observable outcome, user payoff, and state change>
 
-## Metrics & Telemetry Contract
+### Cross-Role Handoffs & Permissions
+*   <State `Single-Role Scope (<ROLE-01>) — no cross-role branching` when only one role is affected. When `>= 2` roles from `PRODUCT_CONTEXT.md` interact with or govern this feature, specify each `Role ID`'s visible information density, allowed actions (`View / Act / Approve`), and handoff transition.>
+
+--------------------------------------------------------------------------------
+
+## 4. Functional Requirements, Business Rules & Edge Cases
+
+| REQ-ID | User / Business Requirement | Affected Role(s) | Business Rules & Edge Cases (Conflicts, Limits, Undo, Permissions) | User-Observable Acceptance Criteria |
+| :--- | :--- | :--- | :--- | :--- |
+| `REQ-001` | <Clear product requirement> | `ROLE-01` | <Rules for empty/duplicate input, edits, cancellations, limits, approvals> | <Testable user-level behavior> |
+| `REQ-002` | <Clear product requirement> | `ROLE-01` | <Governance, auditability, or AI/search quality & fallback expectation> | <Testable user-level behavior> |
+
+## 5. UX States & Copy Guidelines
+
+| UI State | When User Sees This | Layout, Density & Copy Behavior | User Recovery / Next Action |
+| :--- | :--- | :--- | :--- |
+| **Default / Ready** | Normal populated state | <Primary layout aligned to `.pm/ui_tokens.md` and empirical role workflow> | <Primary user action> |
+| **Loading / Progress** | Operation takes noticeable time | <Calm geometry-matched skeleton or progress indicator> | <Cancel or non-blocking wait> |
+| **Empty / Zero-Result** | No items match or first-time use | <Plain-language explanation with zero jargon> | <One clear reset or creation action> |
+| **Error / No-Access Fallback** | System failure, low AI confidence, or role restriction (when role-gated) | <Honest explanation preserving user input; read-only explanation when role-gated> | <Retry, fallback view, or access-request path> |
+
+--------------------------------------------------------------------------------
+
+## 6. Success Metrics, Product Events & Rollout Plan
 
 *   **Falsifiable Causal Chain**:
-    `Feature Mechanism -> User Behavior Shift -> Input Driver Delta -> North Star Outcome`
+    `Product Change -> User Behavior Shift -> Input Driver Delta -> North Star Outcome`
 
-| Metric ID | Role (North Star / Input Driver / Guardrail) | Baseline | Target Delta | Telemetry Readiness | Call-Site / Instrumentation Spec `[file:function:line]` |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `MET-NS-01` | `North Star` | `<Baseline>` | `<Target>` | `INSTRUMENTED_IN_CODE` | `[path/to/file:func:line]` |
-| `MET-DRV-01` | `Input Driver` | `<Baseline>` | `<Target>` | `INSTRUMENTATION_REQUIRED` | Add emitter at `[path/to/file:func:line]` with keys `user_id, tenant_id, trace_id` (`REQ-002`) |
-| `MET-GRD-01` | `Guardrail` | `<Threshold>` | `<Max regression>` | `SLA_INVARIANT` | `[path/to/file:func:line]` |
-
-## Critical User Journeys (CUJs)
-
-### CUJ 1: <Primary Day-1 Workflow> (`REQ-001`, `REQ-002`)
-*   **Given**: <Initial user state, permissions, and data state>
-*   **When**: <User action>
-*   **Then**: <Deterministic system response and emitted telemetry event>
-
-### UX State & Fallback Matrix
-
-| UI State | Trigger Condition | User-Visible Copy & Layout Behavior | Mapped Backend Status / Metric ID |
-| :--- | :--- | :--- | :--- |
-| **Default / Ready** | Valid session and populated data | <Primary view using `.pm/ui_tokens.md` surfaces> | `HTTP 200` / `MET-DRV-01` |
-| **Loading / Streaming** | Request in flight (`>150ms`) | <Skeleton matching final row geometry> | `MET-GRD-01` (latency guardrail) |
-| **Empty / Zero-Result** | Query returns `0` records | <Actionable empty state with clear filter reset> | `HTTP 200 (count=0)` |
-| **Error / Low-Confidence Fallback** | Upstream timeout, `403`, or confidence `< threshold` | <Deterministic fallback message + retry control> | `HTTP 4xx/5xx` / `MET-GRD-01` |
-
---------------------------------------------------------------------------------
-
-## Scope Classification (READY_NOW / ADAPT_NOW)
-
-| REQ-ID | Requirement Specification | Classification (`READY_NOW` / `ADAPT_NOW`) | Evidence Citation Tuple `[file:symbol_or_line]` | Acceptance Criteria |
+| Metric ID | Tier (`North Star` / `Input Driver` / `Guardrail`) | Role Segment (`ALL_ROLES` or `ROLE-xx`) | Current Baseline | Target Goal / Guardrail Bound |
 | :--- | :--- | :--- | :--- | :--- |
-| `REQ-001` | <Detailed requirement> | `READY_NOW` | `[path/to/service:func:10]`, `[path/to/schema:Model:15]` | <Deterministic test/verification condition> |
-| `REQ-002` | <Adapted requirement / telemetry emitter> | `ADAPT_NOW` | `[path/to/handler:emit:45]` | <Deterministic test/verification condition> |
+| `MET-NS-01` | `North Star` | `ALL_ROLES` | `<Baseline>` | `<Target>` |
+| `MET-DRV-01` | `Input Driver` | `<ALL_ROLES or ROLE-01>` | `<Baseline>` | `<Target>` |
+| `MET-GRD-01` | `Guardrail` | `ALL_ROLES` | `<Current bound>` | `<Max acceptable regression>` |
 
-## Data, Quality & Evaluation Gates
-
-*   **Schema & Field Availability**: <Citations to `.pm/schemas.md` verifying required fields are populated>
-*   **Evaluation Dataset & Quality Gate (`evals`)**: <Required when search, ranking, retrieval, or LLM generation is touched: golden query/input distribution, pass/fail rubric, and minimum threshold before rollout; state `N/A — Deterministic CRUD workflow` when no AI/ranking logic is involved>
-
-## Security, Cost & Operational Guardrails
-
-*   **Authentication & RBAC/ACL Enforcement**: <Route and retrieval-time permission checks cited from `PRODUCT_CONTEXT.md`>
-*   **Unit Economics & Rate/Token Ceilings**: <Max cost/tokens/queries per request and caching/debounce rules>
-*   **B2B Multi-Tenant Portability Check**: <Tenant isolation verification when `PRODUCT_CONTEXT.md` specifies `B2B_COMMERCIALIZATION_CANDIDATE`, or `Internal-Only`>
-*   **Kill-Switch & Operational Rollback**: <Feature flag or config toggle in `[file:symbol_or_line]` and metric threshold in `METRICS.md` that triggers automatic or manual rollback>
+*   **Required Product Analytics Events (Domain Level)**: <User actions and breakdown properties—such as `role`, cohort, or outcome—needed by analytics to measure the causal chain>
+*   **Rollout & Experimentation Plan**: <Pilot cohort, A/B test, staged rollout by role/team, and rollback condition if `MET-GRD-*` degrades>
 
 --------------------------------------------------------------------------------
 
-## Alternatives Considered (Alternatives Weighed)
+## 7. Alternatives Considered & Open Questions for Engineering
 
-### Alternative A: <Rejected Scope or Unadapted Feature Variant>
-*   **Pros**: <Pros>
-*   **Cons**: <Why it failed the 4+1 Reality Check>
-*   **Reason for Rejection**: <Evidence-backed reason>
+### Product Alternatives Considered
+*   **Alternative A (<Title>)**: <Pros, cons, and why rejected in favor of the MVP approach>
 
---------------------------------------------------------------------------------
-
-## Prerequisite Ledger (BLOCKED_NOW)
-
-> [!IMPORTANT]
-> **Engineering Handoff Directive (`/egm-draft` & Coding Agents)**: All requirements listed below `## Prerequisite Ledger (BLOCKED_NOW)` are **OUT OF SCOPE** for the current implementation plan. When `/egm-draft docs/product/<feature-slug>/prd.md` is invoked, generate the technical design specification for `READY_NOW` and `ADAPT_NOW` requirements only, and save the engineering design output to `docs/designs/<feature-slug>.md`.
-
-| REQ-ID | Blocked Requirement | Missing Prerequisite `[service/schema/endpoint/permission]` | Owning Team / Boundary | Unblock Condition |
-| :--- | :--- | :--- | :--- | :--- |
-| `REQ-003` | <Blocked requirement> | `<Missing schema field / upstream service / permission>` | `<Owning team>` | `<Specific prerequisite required to promote to READY_NOW>` |
+### Open Questions for Engineering (`/egm-draft`)
+*   <High-level technical sizing, data availability, or external integration questions for engineering to verify when drafting `docs/designs/<feature-slug>.md`>

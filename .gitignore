@@ -5,12 +5,15 @@ __pycache__/
 .pytest_cache/
 .coverage
 htmlcov/
+dist/
+build/
 
 # OS & editor files
 .DS_Store
 Thumbs.db
 
-# Local EGM drafting & review working reports
+# Local EGM & PM development scratch directory
+.dev/
 concepts_brief.md
 design_draft.md
 zoom_out_report.md

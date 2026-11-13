@@ -1,92 +1,76 @@
 # EGM for Product Managers (`egm-product`)
 
-`egm-product` adapts the **Elephant-Goldfish Model (EGM)** for AI-native Product Managers working directly inside existing software repositories.
+`egm-product` adapts the **Elephant-Goldfish Model (EGM)** for AI-native Product Managers: a stateful main agent (**the Elephant**) guides the PM one question at a time and writes bounded product artifacts, while fresh-context stateless read-only subagents (**Goldfish** critics) challenge assumptions with zero author bias.
 
-In engineering `egm`, a deep-context orchestrator (the **Elephant**) drafts technical designs while fresh-context, read-only reviewers (the **Goldfish**) stress-test them for implementation flaws. `egm-product` brings this architecture to product discovery, scope slicing, PRD writing, cross-functional review, and interactive HTML prototyping—without hardcoding domain rules for a single product.
-
----
-
-## Two-Layer Universal Architecture
-
-To operate across any internal product repository—whether an internal platform service such as Search-as-a-Service, an internal operations tool, or a candidate for future B2B commercialization—`egm-product` separates **per-repository context contracts** from **universal PM skills and Goldfish subagents**:
-
-1. **Layer 1: Repository Context Contracts (Per-Repo State)**
-   - `PRODUCT_CONTEXT.md` (capped at 300 lines): Service ownership boundaries (owned backend capabilities vs. upstream producers and downstream consumers), tech stack, RBAC/ACL model, strategic archetype (`INTERNAL_TOOL`, `INTERNAL_PLATFORM_SERVICE`, or `B2B_COMMERCIALIZATION_CANDIDATE`), and pointers to `.pm/schemas.md` (max 400 lines) and `.pm/ui_tokens.md` (max 200 lines).
-   - `METRICS.md` (capped at 300 lines): North Star metric, input drivers, counter-metric guardrails, and code-verified telemetry readiness (`INSTRUMENTED_IN_CODE`, `INSTRUMENTATION_REQUIRED`, or `SLA_INVARIANT`).
-
-2. **Layer 2: The 4 + 1 Universal PM Goldfish Swarm**
-   Every feature hypothesis and PRD is stress-tested by four parallel diagnostic subagents followed by one sequential synthesizer:
-   - [`pm-value-metrics`](./agents/pm_value_metrics.md): Audits the falsifiable causal chain (`Feature Mechanism -> Behavior Shift -> Input Metric Delta -> North Star Outcome`), counter-metric guardrails, and telemetry emission call sites. Classifies missing in-code telemetry as `ADAPT_NOW` (`INSTRUMENTATION_REQUIRED`).
-   - [`pm-tech-lead`](./agents/pm_tech_lead.md): Simulates the Engineering Tech Lead in a planning sync. Audits requirements against owned vs. external service boundaries and classifies each requirement into `READY_NOW`, `ADAPT_NOW`, or `BLOCKED_NOW` with `[file:symbol_or_line]` citations.
-   - [`pm-data-eval`](./agents/pm_data_eval.md): Audits `.pm/schemas.md` and data pipelines to verify field population and enforces evaluation datasets (`evals`) whenever search ranking, retrieval, or LLM generation is involved.
-   - [`pm-ux-risk`](./agents/pm_ux_risk.md): Audits workflow step reduction, zero-training comprehension, UI state completeness (Default, Empty, Loading, Error/Fallback), design-token fidelity (`.pm/ui_tokens.md`), RBAC/ACL leakage, unit/token cost, and B2B multi-tenant portability.
-   - [`pm-scope-slicer`](./agents/pm_scope_slicer.md): Sequential read-only synthesizer invoked after the 4 diagnostic subagents complete. Deduplicates verdicts under strict `BLOCKED_NOW > ADAPT_NOW > READY_NOW` precedence, assigns stable `REQ-xxx` IDs, and separates the Day-1 MVP slice from the `## Prerequisite Ledger (BLOCKED_NOW)`.
+While engineering `egm` (`/egm-draft`, `/egm-review`) focuses on technical architecture, APIs, and database design, **`egm-product` stays 100% focused on Product Management**—understanding company context, empirical user roles, and metric trees; challenging feature value and cutting MVP bloat; writing and reviewing user-focused PRDs; and generating interactive zero-build HTML prototypes.
 
 ---
 
-## 5-Stage Product Pipeline
+## Pure-Product Two-Layer Architecture
+
+1. **Layer 1: Product, Role & Metric Context Contracts (Zero Code Noise)**
+   - Optional `COMPANY_CONTEXT.md` (capped at 200 lines, stored at `~/.pm/COMPANY_CONTEXT.md` across projects or `./COMPANY_CONTEXT.md` locally, or passed via `/pm-discover --context <path>`): Reusable company profile, shared domain glossary, organizational role directory, and business governance/approval norms.
+   - `PRODUCT_CONTEXT.md` (capped at 250 lines): Product value proposition, strategic horizon, high-level map of existing user-facing screens/capabilities, elastic **`Active Product Roles & Workflows`** table (`1` row for single-role products; `N` rows only when goals, usage patterns, or permissions genuinely diverge under `Zero Assumed Personas`), and pointer to `.pm/ui_tokens.md` (max 150 lines).
+   - `METRICS.md` (capped at 200 lines): North Star metric, role-segmented or product-wide input drivers, counter-metric guardrails, and domain-level product analytics events.
+
+2. **Layer 2: Light Product Scanner + The 4 + 1 Product Goldfish Swarm (`4` Parallel Critics + `1` Sequential Synthesizer)**
+   - [`pm-product-scanner`](./agents/pm_product_scanner.md): Lightweight read-only helper used by `/pm-discover` to skim existing user-facing screens/flows and extract `.pm/ui_tokens.md` CSS variables for prototyping—without scanning database schemas or backend internals.
+   - [`pm-value-strategy`](./agents/pm_value_strategy.md) *(CPO Lens)*: Challenges problem sharpness, `Demand Evidence Posture` (`EVIDENCE_BACKED` vs. `UNVALIDATED_ASSUMPTION` + validation/kill criterion), strategic alignment, and MVP bloat.
+   - [`pm-ux-flows`](./agents/pm_ux_flows.md) *(UX & Role Flows Lens)*: Audits Critical User Journeys (`CUJs`), step friction, empirical role fit (`Zero Assumed Personas`), conditional cross-role handoffs, the 4 mandatory UI states, and `prototype.html` craft (`Mode: PROTOTYPE_AUDIT`).
+   - [`pm-metrics-experiment`](./agents/pm_metrics_experiment.md) *(Lead Product Analyst Lens)*: Audits the falsifiable causal chain, rejects vanity metrics, verifies `Role Segment` attribution and guardrails (`MET-GRD-*`), and checks domain product events and rollout plans.
+   - [`pm-business-logic`](./agents/pm_business_logic.md) *(Domain & Logic Lens)*: Audits functional completeness, business rules, user-facing edge cases (edits, undo, conflicts, limits), permissions/approvals, user-perceived AI/search quality, and open questions for engineering.
+   - [`pm-synthesizer`](./agents/pm_synthesizer.md): Sequential read-only synthesizer that deduplicates the 4 Product Goldfish reports into `opportunity_brief.md` or `pm_review_report.md`.
+
+---
+
+## 4-Stage Product Pipeline
 
 | Stage | Skill | Deliverable | Purpose |
 | :--- | :--- | :--- | :--- |
-| **1. Discover** | [`/pm-discover`](./skills/pm-discover/SKILL.md) | `PRODUCT_CONTEXT.md`, `METRICS.md`, `.pm/schemas.md`, `.pm/ui_tokens.md` | Single-pass codebase scan + targeted PM interview to establish repository capabilities, design tokens, and metric baselines. |
-| **2. Brainstorm** | [`/pm-brainstorm`](./skills/pm-brainstorm/SKILL.md) | `docs/product/<feature-slug>/opportunity_brief.md` | Drills into the feature hypothesis and metric causal chain, runs the 4 + 1 Reality Check, and triages `READY_NOW`, `ADAPT_NOW`, and `BLOCKED_NOW` scope. |
-| **3. PRD** | [`/pm-prd`](./skills/pm-prd/SKILL.md) | `docs/product/<feature-slug>/prd.md` | Section-by-section drafting of the stack-grounded PRD with active MVP requirements separated from the `## Prerequisite Ledger (BLOCKED_NOW)`. |
-| **4. Review** | [`/pm-review`](./skills/pm-review/SKILL.md) | `docs/product/<feature-slug>/pm_review_report.md` + updated `prd.md` | 2-round antagonistic audit across the 4 + 1 Goldfish swarm against [`prd-standard.md`](./resources/document_standards/prd-standard.md) with inline resolution (`PROPOSE FIX`, `CONTEST`, `ESCALATE`, `DECLINE`). |
-| **5. Prototype** | [`/pm-prototype`](./skills/pm-prototype/SKILL.md) | `docs/product/<feature-slug>/prototype.html` | Zero-build, standalone interactive HTML/CSS/JS preview of the locked `READY_NOW` / `ADAPT_NOW` MVP states styled with `.pm/ui_tokens.md` variables. |
+| **1. Discover** | [`/pm-discover`](./skills/pm-discover/SKILL.md) | `PRODUCT_CONTEXT.md`, `METRICS.md`, `.pm/ui_tokens.md` (+ optional `COMPANY_CONTEXT.md`) | Light user-surface & CSS-token overview (`--scope <subdir>`, `--context <path>`) + one-question-at-a-time PM interview. |
+| **2. Brainstorm** | [`/pm-brainstorm`](./skills/pm-brainstorm/SKILL.md) | `docs/product/<feature-slug>/opportunity_brief.md` (max 200 lines) | Challenges demand evidence, affected `Role ID`s, alternatives, and MVP scope with the 4 + 1 Product Goldfish swarm. |
+| **3. PRD (+ Review)** | [`/pm-prd`](./skills/pm-prd/SKILL.md) | `docs/product/<feature-slug>/prd.md` (max 250 lines) + `pm_review_report.md` | Drafts a user-focused PRD and polishes it via a built-in 2-round 4 + 1 Product Goldfish review against [`prd-standard.md`](./resources/document_standards/prd-standard.md). |
+| **4. Prototype** | [`/pm-prototype`](./skills/pm-prototype/SKILL.md) | `docs/product/<feature-slug>/prototype.html` | Zero-build HTML/CSS/JS preview (max 400 lines, 4 switchable states + conditional `Role` switcher) verified via `pm-ux-flows`. |
 
-After `/pm-review` approves `docs/product/<feature-slug>/prd.md`, engineering teams can pass the PRD directly into `/egm-draft docs/product/<feature-slug>/prd.md` to generate the engineering design specification at `docs/designs/<feature-slug>.md`.
+Once `/pm-prd` marks `docs/product/<feature-slug>/prd.md` as `Approved`, hand it to `/egm-draft docs/product/<feature-slug>/prd.md` (when the optional engineering `egm` companion plugin is installed) or directly to any coding agent so engineering designs the technical architecture in `docs/designs/<feature-slug>.md`. Likewise, `/pm-prototype` optionally uses `stageshow-critic` when the `stageshow-craft` plugin is installed.
 
 ---
 
 ## Installation & Harness Support
 
-`egm-product` ships native manifests, slash commands (`resources/commands/pm-*.md`), skills (`skills/pm-*/SKILL.md`), subagents (`agents/pm_*.md`), and context rules ([`QWEN.md`](./QWEN.md), [`rules/AGENTS.md`](./rules/AGENTS.md)) so it works across **Qwen Code (`qwen` CLI and custom Qwen CLI forks)**, **Gemini CLI**, **Antigravity**, **Claude Code**, **OpenAI Codex**, and **`omp`**.
-
-### 1. Qwen Code (`qwen` CLI) & Custom Qwen CLI Forks
+`egm-product` ships native manifests, slash commands (`resources/commands/pm-*.md`), skills (`skills/pm-*/SKILL.md`), subagents (`agents/pm_*.md`), and context rules (`QWEN.md`, `GEMINI_EXTENSION.md`, `rules/AGENTS.md`) for **Antigravity**, **Claude Code / Cowork**, **OpenAI Codex / ChatGPT Work**, **Qwen Code (and custom forks)**, **Gemini CLI**, and **`omp`**.
 
 ```bash
-# Option A: Native Qwen Code extension install
-git clone https://github.com/Meddelin/egm-product.git
-qwen extensions install ./egm-product
-
-# Option B: Universal installer (works with ~/.qwen OR any custom Qwen CLI fork directory)
-python ./egm-product/scripts/install.py --target qwen
-# Custom fork config dir (global or project-local):
-python ./egm-product/scripts/install.py --target qwen --config-dir ~/.your-qwen-fork
-```
-
-Once installed in Qwen CLI (or your fork), you get:
-*   **Top-level Slash Commands**: `/pm-discover`, `/pm-brainstorm`, `/pm-prd`, `/pm-review`, `/pm-prototype` (via `commands/pm-*.md`)
-*   **Skills**: `pm-discover`, `pm-brainstorm`, `pm-prd`, `pm-review`, `pm-prototype` (via `skills/pm-*/SKILL.md`)
-*   **Subagents (`task` tool)**: `pm-value-metrics`, `pm-tech-lead`, `pm-data-eval`, `pm-ux-risk`, `pm-scope-slicer` (via `agents/pm_*.md`)
-
-### 2. Gemini CLI, Antigravity, Claude Code, Codex & `omp`
-
-```bash
-# Gemini CLI
-gemini extensions install ./egm-product
-
 # Antigravity CLI
-agy plugin install ./egm-product && agy plugin enable egm-product
+python ./egm-product/scripts/install.py --target antigravity
+# or: agy plugin install ./egm-product && agy plugin enable egm-product
 
-# Claude Code
+# Claude Code (commands invoke as /egm-product:pm-discover, /egm-product:pm-brainstorm, /egm-product:pm-prd, /egm-product:pm-prototype)
 claude plugin marketplace add Meddelin/egm-product && claude plugin install egm-product@egm-product
 
 # OpenAI Codex
 codex plugin marketplace add Meddelin/egm-product && codex plugin add egm-product@egm-product
 
-# omp
+# Qwen Code (`qwen` CLI) or custom Qwen CLI fork
+qwen extensions install ./egm-product
+# or isolated extension install into custom fork config dir:
+python ./egm-product/scripts/install.py --target qwen --config-dir ~/.your-qwen-fork
+
+# Gemini CLI
+gemini extensions install ./egm-product
+
+# omp (skills invoke as /skill:pm-discover, ...)
 omp plugin marketplace add Meddelin/egm-product && omp plugin install egm-product@egm-product
 ```
 
-See [`docs/harnesses.md`](./docs/harnesses.md) for harness-specific subagent delegation mechanics across all supported CLIs.
+See [`docs/harnesses.md`](./docs/harnesses.md), [`docs/claude.md`](./docs/claude.md), and [`docs/codex.md`](./docs/codex.md) for harness-specific delegation and permission rules.
 
-### Quick Verification
-
-Run the structural and packaging test suite from the repository root:
+### Packaging & Verification
 
 ```bash
-pytest tests/unit/test_plugin_structure.py
+pytest tests/unit
+python scripts/pack_plugin.py --target claude --output dist/
+python scripts/pack_plugin.py --target openai --output dist/
 ```
 
 ---

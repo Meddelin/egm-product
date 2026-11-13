@@ -1,60 +1,50 @@
 ---
 name: pm-discover
-description: Discover repository capabilities, data schemas, UI design tokens, and product metrics to build or refresh PRODUCT_CONTEXT.md and METRICS.md.
+description: Get acquainted with the product, company context, empirical user roles, existing user-facing capabilities, UI design tokens, and product metric tree to build PRODUCT_CONTEXT.md and METRICS.md.
 license: Apache-2.0
 disable-model-invocation: true
 ---
 
-# Stage 1: Assisted Product & Metric Discovery (`pm-discover`)
+# Stage 1: Product, Role & Metric Discovery (`pm-discover`)
 
-Read [`../../resources/execution_instructions.md`](../../resources/execution_instructions.md) (or `${CLAUDE_PLUGIN_ROOT}/resources/execution_instructions.md` in Claude Code) before starting.
+When running in Codex or ChatGPT Work, first read [Codex integration](../../docs/codex.md).
+In Claude Code or Cowork, read `${CLAUDE_PLUGIN_ROOT}/docs/claude.md` first.
+Read [`../../resources/pm_execution_instructions.md`](../../resources/pm_execution_instructions.md) (or `${CLAUDE_PLUGIN_ROOT}/resources/pm_execution_instructions.md` in Claude Code) before starting.
 
-`pm-discover` builds and non-destructively refreshes the Layer 1 Repository Context Contracts (`PRODUCT_CONTEXT.md`, `METRICS.md`, `.pm/schemas.md`, and `.pm/ui_tokens.md`) so the 4 + 1 PM Goldfish swarm can evaluate features against your real codebase without domain-specific hardcoding.
-
----
-
-## Step 1: Single-Pass Repository Scan (Read-Only Discovery)
-
-1.  **Check Existing Contracts & Incremental Diff**:
-    *   Check whether `PRODUCT_CONTEXT.md` and `METRICS.md` already exist in the repository root.
-    *   If they exist and contain a `generated_at_commit` SHA in YAML frontmatter, verify whether the commit is reachable via `git cat-file -e <generated_at_commit>^{commit}`.
-        *   If reachable, run `git diff --name-only <generated_at_commit>..HEAD` to scope the refresh to modified routes, schemas, telemetry emitters, and stylesheets while preserving `## Human-Curated Strategy (Preserved Across Runs)` and `## Human-Curated Metric Targets (Preserved Across Runs)`.
-        *   If the commit is unreachable (for example, after a rebase or shallow clone) or the files do not exist, perform a full single-pass scan of the machine-discovered sections.
-2.  **Extract Machine-Discovered Capabilities**:
-    *   Read root build manifests (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, etc.) and any existing directory `README.md` contracts (read-only; never modify `README.md` files).
-    *   Locate primary API routes/controllers, domain services, background workers, authentication/RBAC middleware, and feature-flag hooks.
-    *   Collect raw analytics/telemetry emission call sites (`track`, `emit`, `log_event`, ` capture`, Prometheus counters/histograms, or shared telemetry middleware wrappers) in memory for Step 3 reconciliation.
-3.  **Write Bounded On-Demand Catalogs (`.pm/schemas.md` and `.pm/ui_tokens.md`)**:
-    *   Write `.pm/schemas.md` (**hard cap: 400 lines**) as a single flat Markdown index table:
-        `| Entity / Model Name | Source File & Line Range | Key Fields & Types | Relations / Notes |`
-    *   Write `.pm/ui_tokens.md` (**hard cap: 200 lines**) by extracting design tokens from repository CSS/SCSS variables, Tailwind configs (`tailwind.config.*`), or JS/TS theme objects and normalizing them into standard `:root` CSS custom properties (`--pm-surface-0`, `--pm-surface-1`, `--pm-surface-2`, `--pm-surface-3`, `--pm-text-primary`, `--pm-text-secondary`, `--pm-accent`, `--pm-border`, `--pm-radius-sm`, `--pm-radius-md`, `--pm-radius-lg`, `--pm-space-1..6`, `--pm-font-sans`, `--pm-font-mono`). If the repository is backend-only with no UI stylesheets, write a clean neutral system token palette and note `Source: Neutral System Fallback (Backend-Only Repo)`.
+`pm-discover` builds and refreshes the Layer 1 Product Context Contracts (`PRODUCT_CONTEXT.md`, `METRICS.md`, `.pm/ui_tokens.md`, and optional `COMPANY_CONTEXT.md`). When run inside an existing repository, it uses the lightweight [`pm-product-scanner`](../../agents/pm_product_scanner.md) subagent only to understand **live user-facing screens/capabilities** and extract visual CSS tokens for prototyping—never dumping database schemas or backend internals.
 
 ---
 
-## Step 2: Targeted PM Interview (`[NEEDS_PM_INPUT]`)
+## Step 1: Light Product-Surface & Visual Token Overview
 
-If `## Human-Curated Strategy (Preserved Across Runs)` in `PRODUCT_CONTEXT.md` or `## Human-Curated Metric Targets (Preserved Across Runs)` in `METRICS.md` is missing or contains `[NEEDS_PM_INPUT]` placeholders, interview the Product Manager **one question at a time** (following [`../../resources/execution_instructions.md`](../../resources/execution_instructions.md)) to capture:
-
-1.  **Product Identity & Strategic Archetype**:
-    *   What is the 1–3 sentence product summary, primary user persona, and strategic archetype (`INTERNAL_TOOL`, `INTERNAL_PLATFORM_SERVICE`, or `B2B_COMMERCIALIZATION_CANDIDATE`)?
-2.  **Team Ownership Boundaries**:
-    *   Which services/tables does this team own directly (`READY_NOW` / `ADAPT_NOW` boundary) versus which upstream data producers or platform APIs are owned by external teams (`BLOCKED_NOW` boundary)?
-3.  **Metric Hierarchy & Guardrails**:
-    *   What is the **North Star Metric** (`MET-NS-01`), the primary **Input Driver Metrics** (`MET-DRV-*`, with current baseline and target delta, or `UNKNOWN_COLD_START`), and the **Counter-Metric Guardrails** (`MET-GRD-*`, such as p95 latency, error rate, cost per query, or answer/ranking quality)?
+1.  **Resolve Optional Monorepo Scope & Company/Strategy Docs**:
+    *   Accept optional `--scope <subdir>` (default `.`) and optional `--context <path>` pointing to company, org-structure, glossary, or product-strategy docs.
+    *   Resolve organizational context under strict precedence: `--context <path>` > `./COMPANY_CONTEXT.md` > `~/.pm/COMPANY_CONTEXT.md` > `NONE`, recording the resolved source in `PRODUCT_CONTEXT.md` frontmatter as `company_context_source`.
+2.  **Skim Existing Product Surface via `pm-product-scanner`**:
+    *   Spawn [`pm-product-scanner`](../../agents/pm_product_scanner.md) (`${CLAUDE_PLUGIN_ROOT}/agents/pm_product_scanner.md` in Claude Code) in read-only mode with `Scope Subdirectory: <subdir or .>` and any resolved company/strategy doc paths (*fallback*: perform the bounded 20-file skim inline only if subagent tools are unavailable).
+    *   Write `.pm/ui_tokens.md` (**hard cap: 150 lines**) from `pm-product-scanner`'s CSS token payload (`--pm-surface-0..3`, `--pm-text-primary`, `--pm-text-secondary`, `--pm-accent`, `--pm-border`, `--pm-radius-sm|md|lg`, `--pm-space-1..6`, `--pm-font-sans`, `--pm-font-mono`).
 
 ---
 
-## Step 3: Telemetry Reconciliation & Atomic Contract Write
+## Step 2: Targeted Product Manager Interview (`[NEEDS_PM_INPUT]`)
 
-1.  **In-Memory Telemetry Reconciliation**:
-    *   Cross-reference each `Metric ID` defined by the PM in Step 2 against the raw telemetry emission call sites discovered in Step 1.
-    *   Assign each `Metric ID` one of the three `Telemetry Readiness` states in `## Machine-Discovered Telemetry Inventory (Auto-Refreshed)`:
-        *   `INSTRUMENTED_IN_CODE`: Active emission call site verified (`[file:function:line]`) with entity join keys (`user_id`, `tenant_id`, `trace_id`) and destination table/sink.
-        *   `INSTRUMENTATION_REQUIRED`: Metric is defined by the PM, but no active emission call site exists in code (this will automatically schedule an `ADAPT_NOW` instrumentation requirement in features targeting this metric).
-        *   `SLA_INVARIANT`: Binary latency, uptime, security, or compliance threshold verified via automated tests or infrastructure monitors.
-2.  **Write Contracts**:
-    *   Write `PRODUCT_CONTEXT.md` (**hard cap: 300 lines**) conforming to [`../../resources/templates/product_context.template.md`](../../resources/templates/product_context.template.md).
-    *   Write `METRICS.md` (**hard cap: 300 lines**) conforming to [`../../resources/templates/metrics.template.md`](../../resources/templates/metrics.template.md).
-3.  **Completion & Next-Stage Gate**:
-    *   If `pm-discover` was invoked inline by [`../pm-brainstorm/SKILL.md`](../pm-brainstorm/SKILL.md) or [`../pm-prd/SKILL.md`](../pm-prd/SKILL.md) via the Inline Bootstrap Recovery Gate, return control immediately to the calling skill using the preserved initial user prompt.
-    *   Otherwise, present a single-select gate offering to proceed to [`/pm-brainstorm`](../pm-brainstorm/SKILL.md) or conclude discovery.
+Preserving any human-curated sections already filled in existing `PRODUCT_CONTEXT.md` or `METRICS.md`, interview the Product Manager **one open-ended question at a time** in plain chat (never via multiple-choice tools) for any missing context:
+
+1.  **Product Identity, Company Context & Strategy**:
+    *   Share the brief user-surface summary returned by `pm-product-scanner` (plus any pre-filled notes from `COMPANY_CONTEXT.md` / `--context` docs) and clarify the product's core value proposition, archetype (`Internal Corporate Product`, `Internal Platform`, `B2B SaaS`, `B2C Product`, etc.), and current strategic priorities.
+2.  **Empirical Product Roles & Workflows (`Zero Assumed Personas`)**:
+    *   Ask which real user/company groups **actually** use, configure, or approve things in *this* product, what job-to-be-done and usage cadence/UI need each group has (`1` row for single-role tools; multiple `ROLE-xx` rows only where goals, workflows, or permissions genuinely diverge), which company roles are out of scope (or `NONE` for single-role consumer products), and what customer/problem evidence sources exist (`docs/research/`, interviews, support tickets, analytics, or `NONE_COLD_START`). Never invent persona stereotypes.
+3.  **Product Metric Tree & Guardrails**:
+    *   Clarify the **North Star Metric** (`MET-NS-01`), leading **Input Driver Metrics** (`MET-DRV-*` with `Role Segment`: `ALL_ROLES` or `ROLE-xx`), **Counter-Metric Guardrails** (`MET-GRD-*`), and domain-level funnel events / experimentation norms.
+
+---
+
+## Step 3: Write Contracts & Handoff
+
+1.  **Save Contracts**:
+    *   Write `PRODUCT_CONTEXT.md` (**hard cap: 250 lines**) conforming to [`../../resources/templates/product_context.template.md`](../../resources/templates/product_context.template.md) (`${CLAUDE_PLUGIN_ROOT}/resources/templates/product_context.template.md`).
+    *   Write `METRICS.md` (**hard cap: 200 lines**) conforming to [`../../resources/templates/metrics.template.md`](../../resources/templates/metrics.template.md) (`${CLAUDE_PLUGIN_ROOT}/resources/templates/metrics.template.md`).
+    *   If the PM asks to persist reusable company-wide glossary and governance context across projects, write `./COMPANY_CONTEXT.md` (or `~/.pm/COMPANY_CONTEXT.md` when requested, **hard cap: 200 lines**) conforming to [`../../resources/templates/company_context.template.md`](../../resources/templates/company_context.template.md) (`${CLAUDE_PLUGIN_ROOT}/resources/templates/company_context.template.md`).
+2.  **Completion & Next-Stage Progression Gate**:
+    *   If `pm-discover` was invoked inline by [`../pm-brainstorm/SKILL.md`](../pm-brainstorm/SKILL.md) or [`../pm-prd/SKILL.md`](../pm-prd/SKILL.md), return control immediately to the calling skill in the current thread.
+    *   Otherwise, summarize the saved product contracts and present a Progression Gate: `(Recommended) Proceed to /pm-brainstorm` vs. `Conclude discovery`.

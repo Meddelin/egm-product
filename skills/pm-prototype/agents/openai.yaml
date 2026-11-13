@@ -1,6 +1,6 @@
 interface:
   display_name: "PM Prototype"
-  short_description: "Build a zero-build HTML prototype using repo design tokens"
+  short_description: "Build a zero-build HTML prototype using product UI tokens"
   icon_small: "./assets/icon.svg"
   icon_large: "./assets/icon.svg"
   brand_color: "#1B6EF3"

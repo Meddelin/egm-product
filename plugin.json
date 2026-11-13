@@ -1,8 +1,8 @@
 {
   "name": "egm-product",
   "displayName": "EGM Product",
-  "version": "0.1.0",
-  "description": "AI-native Product Management framework on the Elephant-Goldfish Model (EGM): assisted repository & metric discovery, 4+1 cross-functional reality checks, stack-grounded PRDs, and zero-build interactive HTML prototypes.",
+  "version": "0.4.0",
+  "description": "AI-native Product Management framework on the Elephant-Goldfish Model (EGM): product, company & role discovery, 4+1 opportunity shaping, user-focused PRDs with built-in product review, and zero-build interactive HTML prototypes.",
   "author": {
     "name": "stas",
     "url": "https://github.com/Meddelin"
@@ -12,9 +12,9 @@
   "license": "Apache-2.0",
   "logo": "assets/icon.svg",
   "suggestedPrompts": [
-    "Run /pm-discover to map our repository capabilities, UI tokens, and product metrics",
-    "Run /pm-brainstorm to stress-test a new feature with the 4+1 PM Goldfish swarm",
-    "Run /pm-prd and /pm-review to draft and audit a stack-grounded PRD"
+    "Run /pm-discover to map our product context, user roles, and metric tree",
+    "Run /pm-brainstorm to shape and challenge a new feature idea",
+    "Run /pm-prd to draft and review a user-focused PRD"
   ],
   "keywords": [
     "product-management",
@@ -30,21 +30,21 @@
       "requires_local_executor": true,
       "interface": {
         "displayName": "EGM Product",
-        "shortDescription": "AI-native product discovery, PRDs, and prototypes",
-        "longDescription": "Adapts the Elephant-Goldfish Model (EGM) for Product Managers working inside existing software repositories: discover capabilities and metric emitters, stress-test feature ideas with the 4+1 PM Goldfish swarm, draft stack-grounded PRDs, review specs, and build zero-build interactive HTML prototypes.",
+        "shortDescription": "Specs, PRDs & HTML prototypes",
+        "longDescription": "Adapts the Elephant-Goldfish Model (EGM) for Product Managers: capture company context, empirical user roles, and product metric trees; shape opportunities and cut MVP bloat with the 4+1 Product Goldfish swarm (value, UX/role flows, metrics, and business logic); draft and review user-focused PRDs without technical noise; and build zero-build interactive HTML prototypes.",
         "developerName": "stas",
         "category": "Productivity",
         "capabilities": [
-          "Discover product context and telemetry",
-          "Stress-test feature scope with 4+1 PM Goldfish",
-          "Draft and review stack-grounded PRDs",
+          "Map product strategy, empirical user roles, and metrics",
+          "Challenge feature scope with 4+1 Product Goldfish critics",
+          "Draft and polish user-focused PRDs with built-in review",
           "Generate zero-build interactive HTML prototypes"
         ],
         "defaultPrompt": [
-          "Discover our repository context and product metrics",
-          "Brainstorm a new feature and run the 4+1 Reality Check",
-          "Draft a stack-grounded PRD from our opportunity brief",
-          "Review this PRD with the PM Goldfish swarm"
+          "Discover our product context, roles, and metric tree",
+          "Brainstorm a product opportunity and cut MVP bloat",
+          "Draft and review a user-focused PRD",
+          "Generate an interactive HTML prototype from our PRD"
         ],
         "brandColor": "#1B6EF3",
         "composerIcon": "./assets/icon.svg",

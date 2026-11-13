@@ -1,36 +1,26 @@
 ---
-schema_version: "1.0"
-generated_at_commit: "<git-sha-or-UNCOMMITTED>"
-generated_at_timestamp: "<YYYY-MM-DDTHH:MM:SSZ>"
+schema_version: "2.0"
+updated_at: "<YYYY-MM-DD>"
 ---
 
-# Product Metrics & Telemetry Contract (`METRICS.md`)
+# Product Metrics & Experimentation Contract (`METRICS.md`)
 
-> **Contract Cap**: Maximum 300 lines (~3,500 tokens). Re-running `/pm-discover` preserves `## Human-Curated Metric Targets (Preserved Across Runs)` and refreshes `## Machine-Discovered Telemetry Inventory (Auto-Refreshed)` by reconciling each `Metric ID` against active code emitters.
-
----
-
-## Human-Curated Metric Targets (Preserved Across Runs)
-
-Every feature evaluated by `/pm-brainstorm` and `/pm-prd` must link a falsifiable causal chain (`Feature Mechanism -> User Behavior Shift -> Input Driver Delta -> North Star Outcome`) to at least one **Input Driver** and one **Guardrail** metric below.
-
-| Metric ID | Tier (North Star / Input Driver / Guardrail) | Definition & Formula | Baseline | Target Delta |
-| :--- | :--- | :--- | :--- | :--- |
-| `MET-NS-01` | `North Star` | `[NEEDS_PM_INPUT: Primary business/product outcome formula]` | `[NEEDS_PM_INPUT: Current value or UNKNOWN_COLD_START]` | `[NEEDS_PM_INPUT: Target improvement over window]` |
-| `MET-DRV-01` | `Input Driver` | `[NEEDS_PM_INPUT: Leading behavioral indicator directly moved by feature UX/backend]` | `[NEEDS_PM_INPUT: Current value or UNKNOWN_COLD_START]` | `[NEEDS_PM_INPUT: Target delta]` |
-| `MET-GRD-01` | `Guardrail` | `[NEEDS_PM_INPUT: Counter-metric protecting latency, error rate, unit cost, or quality]` | `[NEEDS_PM_INPUT: Current threshold]` | `[NEEDS_PM_INPUT: Max acceptable regression]` |
+> **Contract Cap**: Maximum 200 lines. Defines the product's North Star, leading input drivers, counter-metric guardrails, and domain-level product analytics vocabulary in business terms (without source-code line citations).
 
 ---
 
-## Machine-Discovered Telemetry Inventory (Auto-Refreshed)
+## 1. Product Metric Tree
 
-### Telemetry Readiness Enum
-*   **`INSTRUMENTED_IN_CODE`**: Active emission call site verified in source code with entity correlation keys (`user_id`, `tenant_id`, `session_id`, `trace_id`) and destination sink.
-*   **`INSTRUMENTATION_REQUIRED`**: Metric is defined in `## Human-Curated Metric Targets`, but no active emitter exists in code. Any feature targeting this metric automatically receives an `ADAPT_NOW` telemetry instrumentation requirement in its Day-1 MVP slice.
-*   **`SLA_INVARIANT`**: Binary latency, reliability, security, or compliance threshold verified via automated tests or infrastructure monitors rather than user event analytics.
+Every feature shaped in `/pm-brainstorm` and `/pm-prd` must connect a falsifiable causal chain (`Product Change -> User Behavior Shift -> Input Driver Delta -> North Star Outcome`) to at least one **Input Driver** and one **Guardrail** below.
 
-| Metric ID | Telemetry Readiness | Call-Site Citation [file:function:line] | Entity Join Keys | Sink / Table |
-| :--- | :--- | :--- | :--- | :--- |
-| `MET-NS-01` | `INSTRUMENTATION_REQUIRED` | `NONE (No emitter found in repository)` | `user_id, tenant_id` | `analytics.events` |
-| `MET-DRV-01` | `INSTRUMENTED_IN_CODE` | `[path/to/file:emit_event:42]` | `user_id, session_id, trace_id` | `analytics.events` |
-| `MET-GRD-01` | `SLA_INVARIANT` | `[path/to/middleware:record_latency:88]` | `request_id, route` | `prometheus / logs` |
+| Metric ID | Tier (`North Star` / `Input Driver` / `Guardrail`) | Role Segment (`ALL_ROLES` or `ROLE-xx`) | Definition & Business Formula | Current Baseline | Target Goal / Threshold |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `MET-NS-01` | `North Star` | `ALL_ROLES` | `[NEEDS_PM_INPUT: Core user/business value outcome formula]` | `[NEEDS_PM_INPUT: Current value or UNKNOWN_COLD_START]` | `[NEEDS_PM_INPUT: Target improvement]` |
+| `MET-DRV-01` | `Input Driver` | `[NEEDS_PM_INPUT: ALL_ROLES or specific ROLE-01]` | `[NEEDS_PM_INPUT: Leading user behavior directly moved by product changes]` | `[NEEDS_PM_INPUT: Current value or UNKNOWN_COLD_START]` | `[NEEDS_PM_INPUT: Target delta]` |
+| `MET-GRD-01` | `Guardrail` | `ALL_ROLES` | `[NEEDS_PM_INPUT: Counter-metric protecting task completion quality, error rate, speed, or unit cost]` | `[NEEDS_PM_INPUT: Current acceptable bound]` | `[NEEDS_PM_INPUT: Max acceptable regression]` |
+
+---
+
+## 2. Domain Product Events & Rollout Norms
+*   **Core Funnel / Lifecycle Events (Product Vocabulary)**: `[NEEDS_PM_INPUT: Key user milestones in business language — e.g., Search Submitted, Result Opened, Draft Submitted, Item Approved — and key breakdown dimensions such as role or cohort]`
+*   **Experimentation & Decision Norms**: `[NEEDS_PM_INPUT: How launches are evaluated — e.g., A/B test, staged rollout by role/department, pilot cohort feedback, or kill/pivot window]`

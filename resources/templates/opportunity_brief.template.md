@@ -3,70 +3,53 @@
 *   **Author:** <pm-name>
 *   **Status:** Draft | Approved for PRD
 *   **Date:** <YYYY-MM-DD>
-*   **Context Contracts:** `PRODUCT_CONTEXT.md` (`<commit>`), `METRICS.md` (`<commit>`)
 
 --------------------------------------------------------------------------------
 
-## 4+1 Swarm Execution Audit Table
+## 4+1 Product Goldfish Audit Summary
 
-| Subagent | Status (completed / retried / failed) | Blockers | Adaptations |
+| Product Lens | Status (`completed` / `retried` / `failed`) | Key Risks Flagged | Scope Simplifications Proposed |
 | :--- | :--- | :--- | :--- |
-| `pm-value-metrics` | `completed` | 0 | 0 |
-| `pm-tech-lead` | `completed` | 0 | 0 |
-| `pm-data-eval` | `completed` | 0 | 0 |
-| `pm-ux-risk` | `completed` | 0 | 0 |
-| `pm-scope-slicer` | `completed` | — | — |
+| `pm-value-strategy` | `completed` | 0 | 0 |
+| `pm-ux-flows` | `completed` | 0 | 0 |
+| `pm-metrics-experiment` | `completed` | 0 | 0 |
+| `pm-business-logic` | `completed` | 0 | 0 |
+| `pm-synthesizer` | `completed` | — | — |
 
 --------------------------------------------------------------------------------
 
-## Overview & Metric Causal Chain
+## 1. Problem, Evidence & Causal Hypothesis
 
-*   **Problem Statement**: <Falsifiable description of the user or system bottleneck grounded in `PRODUCT_CONTEXT.md` and `METRICS.md`>
-*   **Target Persona**: <Persona from `PRODUCT_CONTEXT.md`>
+*   **User & Business Bottleneck**: <Falsifiable statement of the problem, why it matters now, and what happens if we do nothing>
+*   **Affected Product Roles**: `<ROLE-01 (Single-Role Scope) | ROLE-01, ROLE-02 (Multi-Role — explain how goals, views, or handoffs differ across roles from PRODUCT_CONTEXT.md)>`
+*   **Demand Evidence Posture**: `EVIDENCE_BACKED` (`<interviews / support tickets / funnel data / research doc>`) | `UNVALIDATED_ASSUMPTION`
+*   **Validation Hypothesis & Kill/Pivot Criterion**: <Mandatory when `UNVALIDATED_ASSUMPTION` (recommended for all features): measurable adoption/outcome threshold over N days/users below which we iterate or sunset the feature>
 *   **Falsifiable Causal Chain**:
-    `Feature Mechanism (<change>) -> User Behavior Shift (<action>) -> Input Driver Delta (<Metric ID: baseline -> target>) -> North Star Outcome (<Metric ID>)`
-*   **Paired Counter-Metric Guardrail**: `<Metric ID>` (<threshold that must not degrade>)
-*   **Telemetry Readiness Status**: `INSTRUMENTED_IN_CODE` | `INSTRUMENTATION_REQUIRED` (adds `ADAPT_NOW` instrumentation requirement) | `SLA_INVARIANT`
+    `Product Change (<mechanism>) -> User Behavior Shift (<action>) -> Input Driver Delta (<Metric ID>) -> North Star Outcome (<Metric ID>)`
+*   **Paired Counter-Metric Guardrail**: `<Metric ID>` (<acceptable bound that must not degrade>)
 
 --------------------------------------------------------------------------------
 
-## Cross-Functional Reality Check Matrix
+## 2. Proposed Product Solution & MVP Scope Cut
 
-> **Precedence Rule**: `BLOCKED_NOW > ADAPT_NOW > READY_NOW`. Every row requires a machine-verifiable `[file:symbol_or_line]` Evidence Citation Tuple.
+### MVP Scope (`In Scope` — High-Leverage Day-1 Slice)
+*   **`REQ-001` (<Capability Title>)**: <User-facing behavior and expected value>
+*   **`REQ-002` (<Simplified Workflow / Guardrail>)**: <Simplified product behavior chosen to maximize value without bloat>
 
-| REQ-ID | Requirement | Verdict (READY_NOW / ADAPT_NOW / BLOCKED_NOW) | Lens | Evidence Citation [file:symbol_or_line] | Proposed Adaptation |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `REQ-001` | <Core capability> | `READY_NOW` | `pm-tech-lead` | `[path/to/service:func:10]` | None — self-contained in owned service. |
-| `REQ-002` | <Adapted capability or telemetry task> | `ADAPT_NOW` | `pm-value-metrics` | `[path/to/handler:emit:45]` | Emit `<event_name>` with `user_id, trace_id` on completion. |
-| `REQ-003` | <Blocked capability> | `BLOCKED_NOW` | `pm-data-eval` | `[path/to/schema:Model:22]` | Defer to Prerequisite Ledger until upstream producer populates `<field>`. |
-
---------------------------------------------------------------------------------
-
-## Goals vs. Non-Goals
-
-### Goals (Day-1 MVP Slice: `READY_NOW` + Approved `ADAPT_NOW`)
-*   **`REQ-001`**: <Goal statement>
-*   **`REQ-002`**: <Adapted goal statement>
-
-### Non-Goals (Out of Scope & Deferred `BLOCKED_NOW` Items)
-*   **Deferred `BLOCKED_NOW` Requirements**: `REQ-003` (isolated in `## Prerequisite Ledger (BLOCKED_NOW)`).
-*   <Additional explicit exclusions>
+### Deferred & Out of Scope (`Not in MVP`)
+*   **`<Deferred Idea>`**: <Why excluded from MVP (low leverage, unvalidated demand, or cross-org dependency) and what signal would justify revisiting it later>
 
 --------------------------------------------------------------------------------
 
-## Alternatives Weighed
+## 3. Product Alternatives Weighed
 
-### Alternative 1: <Unadapted Proposal / Alternative Approach>
+### Alternative A: <Do Nothing / Simpler Copy or Default Change / Different Flow>
 *   **Pros**: <Pros>
-*   **Cons**: <Why it triggered `BLOCKED_NOW` or degraded guardrails>
-*   **Decision**: Rejected in favor of `<ADAPT_NOW counter-proposal>`.
+*   **Cons**: <Why insufficient or why rejected/adopted>
+*   **Decision**: <Adopted into MVP | Rejected — reason>
 
 --------------------------------------------------------------------------------
 
-## Prerequisite Ledger (BLOCKED_NOW)
-
-> **Engineering Handoff Boundary**: Items below are **excluded** from the Day-1 MVP slice until their external or architectural prerequisites are satisfied.
-
-| REQ-ID | Blocked Requirement | Missing Prerequisite `[service/schema/endpoint/permission]` | Owning Team / Boundary | Unblock Condition |
-| :--- | :--- | :--- | :--- | :--- |
-| `REQ-003` | <Blocked capability> | `<Missing upstream field / API / infra>` | `<External team from PRODUCT_CONTEXT.md>` | `<Schema migration or upstream producer contract landed>` |
+## 4. Key Risks & Open Questions for Engineering
+*   **Product / Business Risks**: <Adoption, workflow friction, role conflict, or quality risks>
+*   **Questions for Engineering Grooming**: <High-level feasibility, sizing, or integration questions to clarify during `/egm-draft`>

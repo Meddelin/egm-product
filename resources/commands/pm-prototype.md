@@ -1,10 +1,10 @@
 ---
-description: Generate a zero-build interactive HTML prototype (docs/product/<slug>/prototype.html) from an approved PRD
+description: Generate and audit a zero-build standalone HTML/CSS/JS prototype from an approved PRD using product UI tokens and pm-ux-flows
 ---
 
-Execute the **Stage 5: Zero-Build Interactive HTML Prototyping (`pm-prototype`)** workflow:
+Execute **Stage 4: Zero-Build Interactive HTML Prototyping (`pm-prototype`)**:
 
-1. Read and follow [`../../skills/pm-prototype/SKILL.md`](../../skills/pm-prototype/SKILL.md) and [`../execution_instructions.md`](../execution_instructions.md) (located inside the `egm-product` extension/plugin directory).
-2. Read `docs/product/<feature-slug>/prd.md` and `.pm/ui_tokens.md`, and generate a standalone, zero-build HTML/CSS/JS preview at `docs/product/<feature-slug>/prototype.html` (capped at 400 lines, 3–4 switchable UI states, zero external network requests, applying embedded Stageshow UI craft rules).
+1. Read and follow [`../../skills/pm-prototype/SKILL.md`](../../skills/pm-prototype/SKILL.md) and [`../pm_execution_instructions.md`](../pm_execution_instructions.md).
+2. Generate `docs/product/<feature-slug>/prototype.html` (max 400 lines, zero external network requests, 4 switchable UX states + conditional `Role` switcher when `>= 2` roles diverge) using `.pm/ui_tokens.md`, and verify craft via `pm-ux-flows` (`Mode: PROTOTYPE_AUDIT`).
 
-Target feature / arguments: `{{args}}`
+Additional user arguments/context: `{{args}}`

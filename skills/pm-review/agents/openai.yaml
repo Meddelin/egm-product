@@ -1,6 +1,0 @@
-interface:
-  display_name: "PM Review"
-  short_description: "Audit and resolve PRD findings with fresh PM Goldfish agents"
-  icon_small: "./assets/icon.svg"
-  icon_large: "./assets/icon.svg"
-  brand_color: "#1B6EF3"
